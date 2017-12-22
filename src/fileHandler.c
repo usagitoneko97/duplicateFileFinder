@@ -43,17 +43,24 @@ void _updateFileInfo(DIR *dr, char* path){
 FILE *getNextFile(FileObj *fileObj, const char *mode){
     struct dirent *de;
     do{
-    if ((de = readdir(fileObj->dr)) != NULL){
-        //still has file/folder
-        char temp[256];
-        strcpy(temp, fileObj->path);
-        strcat(temp, "/");
-        strcat(temp, de->d_name);
-        if (isRegularFile(temp)){
-            return fopen(fileObj->path, mode);
+        if ((de = readdir(fileObj->dr)) != NULL){
+            //still has file/folder
+            if(strcmp(de->d_name, ".") || strcmp(de->d_name, "..")){
+                continue;
+            }
+            char temp[256];
+            strcpy(temp, fileObj->path);
+            strcat(temp, "/");
+            strcat(temp, de->d_name);
+            if (isRegularFile(temp)){
+                return fopen(temp, mode);
+            }
         }
-    }
+        else{
+            break;
+        }
     } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."));
+    return NULL;
 }
 
 void openSrc(){
