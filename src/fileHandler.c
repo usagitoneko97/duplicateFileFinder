@@ -48,6 +48,7 @@ FILE *getNextFile(FileObj *fileObj, const char *mode){
     char *currentDir;
     do{
         if ((de = readdir(fileObj->dr)) != NULL){
+            
             //still has file/folder
             if(!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..")){
                 continue;
@@ -74,6 +75,7 @@ FILE *getNextFile(FileObj *fileObj, const char *mode){
             }
         }
         else{
+            //de = NULL, close current dir, opendir(..) , return NULL
             break;
         }
     } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."));
@@ -148,4 +150,12 @@ void updateJson(const char *workingDir){
         file = getNextFile(&fileObj, "r");
         //process json here
     }
+}
+
+int getSize(FILE *fp){
+    int sz;
+    fseek(fp, 0L, SEEK_END);
+    sz = ftell(fp);
+    fseek(fp, 0L, SEEK_SET);
+    return sz;
 }

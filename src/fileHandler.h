@@ -7,6 +7,20 @@ typedef struct{
     DIR *dr;
     char *path;
 } FileObj;
+/*
+typedef struct{
+    char *name;
+    long long size;
+    Date dateModified;
+} FileContent;
+
+typedef struct{
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+} Date;*/
 
 void updateFileInfo();
 void _updateFileInfo(DIR *dr, char* path);
@@ -16,5 +30,6 @@ void openSrc();
 
 void removeDir(char *path);
 void _removeDir(DIR *dr, char *path);
+int getSize(FILE *fp);
 
 #endif // _FILEHANDLER_H

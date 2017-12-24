@@ -113,4 +113,36 @@ void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
 
     closedir(fileObj.dr);
 }
-//TODO : a way to check the returned FILE *
+
+void xtest_getNextFile_given_1File_1folder_2FIle_expect_get_all_files(void)
+{
+    FileObj fileObj;
+    fileObj.dr = opendir(TEST_ENV);
+    fileObj.path = (char *)malloc(sizeof(char) * 256);
+    strcpy(fileObj.path, TEST_ENV);
+
+    createTempFile(TEST_ENV, "test123.txt");
+    char buffer[256];
+    sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
+    mkdir(buffer);
+    createTempFile(buffer, "test456.txt");
+    createTempFile(buffer, "test789.txt");
+
+    FILE *nextFile = getNextFile(&fileObj, "r");
+    TEST_ASSERT_NOT_NULL(nextFile);
+    fclose(nextFile);
+
+    nextFile = getNextFile(&fileObj, "r");
+    TEST_ASSERT_NOT_NULL(nextFile);
+    fclose(nextFile);
+
+    nextFile = getNextFile(&fileObj, "r");
+    TEST_ASSERT_NOT_NULL(nextFile);
+    fclose(nextFile);
+
+    closedir(fileObj.dr);
+}
+
+    //TODO : a way to check the returned FILE *
+    //TODO : getFileSize return a specific structure that contains all the info ( size, name ..)
+    //TODO : getNextFile should be using opendir(..) to get back too the upper dir when iterate thorough the current folder
