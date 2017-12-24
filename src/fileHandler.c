@@ -45,7 +45,7 @@ FILE *getNextFile(FileObj *fileObj, const char *mode){
     do{
         if ((de = readdir(fileObj->dr)) != NULL){
             //still has file/folder
-            if(strcmp(de->d_name, ".") || strcmp(de->d_name, "..")){
+            if(!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..")){
                 continue;
             }
             char temp[256];
@@ -81,4 +81,42 @@ void openSrc(){
             printf("done!");
 
     closedir(dr);
+}
+
+void removeDir(char *path)
+{
+    DIR *dr = opendir(path);
+    if(dr == NULL)
+        return;
+    _removeDir(dr, path);
+    closedir(dr);
+    rmdir(path);
+}
+
+void _removeDir(DIR *dr, char *path)
+{
+    struct dirent *de;
+    char tempPath[256];
+    while ((de = readdir(dr)) != NULL)
+    {
+        strcpy(tempPath, path);
+        if (de->d_name[0] == '.')
+        {
+            continue;
+        }
+        strcat(tempPath, "/");
+        strcat(tempPath, de->d_name);
+        if (isRegularFile(tempPath)){
+            //delete file
+            remove(tempPath);
+        }
+        else
+        {
+            //printf("%s\n", de->d_name);
+            strcat(tempPath, "/");
+            _removeDir(opendir(tempPath), tempPath);
+            rmdir(tempPath);
+        }
+    }
+    return;
 }

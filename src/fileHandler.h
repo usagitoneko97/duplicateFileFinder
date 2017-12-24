@@ -14,4 +14,7 @@ int isRegularFile(const char *path);
 FILE *getNextFile(FileObj *fileObj, const char *mode);
 void openSrc();
 
+void removeDir(char *path);
+void _removeDir(DIR *dr, char *path);
+
 #endif // _FILEHANDLER_H
