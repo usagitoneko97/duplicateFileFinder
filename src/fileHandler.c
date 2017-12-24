@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <malloc.h>
 
 int isRegularFile(const char *path)
 {
@@ -42,6 +43,9 @@ void _updateFileInfo(DIR *dr, char* path){
 
 FILE *getNextFile(FileObj *fileObj, const char *mode){
     struct dirent *de;
+    DIR *currentDr;
+    FILE *fileReturn;
+    char *currentDir;
     do{
         if ((de = readdir(fileObj->dr)) != NULL){
             //still has file/folder
@@ -54,6 +58,19 @@ FILE *getNextFile(FileObj *fileObj, const char *mode){
             strcat(temp, de->d_name);
             if (isRegularFile(temp)){
                 return fopen(temp, mode);
+            }
+            else{
+                //backup the current path
+                currentDir = fileObj->path;
+                currentDr = fileObj->dr;
+                fileObj->dr = opendir(temp);
+                fileObj->path = temp;
+                fileReturn = getNextFile(fileObj, mode);
+                //reload with the upper dir value
+                closedir(fileObj->dr);
+                fileObj->dr = currentDr;
+                fileObj->path = currentDir;
+                return fileReturn;
             }
         }
         else{
@@ -119,4 +136,16 @@ void _removeDir(DIR *dr, char *path)
         }
     }
     return;
+}
+
+void updateJson(const char *workingDir){
+    FILE *file;
+    FileObj fileObj;
+    fileObj.dr = opendir(workingDir);
+    fileObj.path = (char *)malloc(sizeof(char) * 256);
+    strcpy(fileObj.path, workingDir);
+    while(file != NULL){
+        file = getNextFile(&fileObj, "r");
+        //process json here
+    }
 }
