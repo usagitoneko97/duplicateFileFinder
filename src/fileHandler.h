@@ -2,6 +2,9 @@
 #define _FILEHANDLER_H
 
 #include <dirent.h>
+#include <json-c/json.h>
+
+#define JSON_FILE_NAME      ".property.json"
 
 typedef struct{
     DIR *dr;
@@ -21,6 +24,7 @@ typedef struct{
     char *name;
     long long size;
     Date dateModified;
+    //..
 } FileContent;
 
 typedef struct
@@ -37,7 +41,8 @@ void openSrc();
 
 void removeDir(char *path);
 void _removeDir(DIR *dr, char *path);
-int getSize(FILE *fp);
+int getSize(char *path);
 
+void updateJson(char *workingDir);
 
 #endif // _FILEHANDLER_H

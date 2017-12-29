@@ -12,18 +12,12 @@
   :build_root: build
 #  :release_build: TRUE
   :test_file_prefix: test_
-  :which_ceedling: vendor/ceedling
-  :default_tasks:
-    - test:all
 
 #:release_build:
 #  :output: MyApp.out
 #  :use_assembly: FALSE
 
 :environment:
-
-:module_generator:
-  :naming: bumpy
 
 :extension:
   :executable: .exe
@@ -63,13 +57,20 @@
     int8:     INT8
     bool:     UINT8
 
-:gcov:
-    :html_report_type: basic
-
-#:tools:
+:tools:
 # Ceedling defaults to using gcc for compiling, linking, etc.
 # As [:tools] is blank, gcc will be used (so long as it's in your system path)
 # See documentation to configure a given toolchain for use
+  :test_linker:
+    :executable: gcc                  #absolute file path
+    :name: 'gcc linker'
+    :arguments:
+      - ${1}                          #list of object files to link (Ruby method call param list sub)
+      - -lws2_32                      #link with winsock header
+      - -lm                           #link with math header
+      - -LC:/Msys/extlib              #location of external libraries
+      - -ljson-c                      #link with json-c library
+      - -o ${2}                       #executable file output (Ruby method call param list sub)
 
 # LIBRARIES
 # These libraries are automatically injected into the build process. Those specified as
