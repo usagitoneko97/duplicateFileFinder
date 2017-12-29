@@ -22,13 +22,17 @@ void tearDown(void){
     removeDir(TEST_ENV);
 }
 
-void createTempFile(const char *path, const char *name){
+void createTempFile(const char *path, const char *name, int size){
     char *completePath = (char*)malloc(sizeof(char) * 256);
     strcpy(completePath, path);
     strcat(completePath, "/");
     strcat(completePath, name);
 
     FILE *filePtr = fopen(completePath, "w");
+    //generate file of this size
+    fseek(filePtr, size-1, SEEK_SET);
+    fputc('\0', filePtr);
+
     fclose(filePtr);
 }
 
@@ -40,8 +44,8 @@ void removeTempFile(const char*pathName){
 
 
 void test_removeDir_given_2_file_expect_empty(void){
-    createTempFile(TEST_ENV, "test123.txt");
-    createTempFile(TEST_ENV, "test456.txt");
+    createTempFile(TEST_ENV, "test123.txt", 0);
+    createTempFile(TEST_ENV, "test456.txt", 0);
 
     removeDir(TEST_ENV);
 
@@ -50,7 +54,7 @@ void test_removeDir_given_2_file_expect_empty(void){
 }
 
 void test_removeDir_given_1File_1Folder_expect_empty(void){
-    createTempFile(TEST_ENV, "test123.txt");
+    createTempFile(TEST_ENV, "test123.txt", 0);
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
@@ -61,12 +65,12 @@ void test_removeDir_given_1File_1Folder_expect_empty(void){
 }
 
 void test_removeDir_given_1File_1Folder_with_1File_expect_empty(void){
-    createTempFile(TEST_ENV, "test123.txt");
+    createTempFile(TEST_ENV, "test123.txt", 0);
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
     //create file inside dummy
-    createTempFile(buffer, "test123.txt");
+    createTempFile(buffer, "test123.txt", 0);
 
     removeDir(TEST_ENV);
     DIR *dir = opendir(TEST_ENV);
@@ -101,7 +105,7 @@ void test_getNextFile_given_1File_expect_firstFile(void)
     fileObj.dr = opendir(TEST_ENV);
     fileObj.path = (char *)malloc(sizeof(char) * 256);
     strcpy(fileObj.path, TEST_ENV);
-    createTempFile(TEST_ENV, "test123.txt");
+    createTempFile(TEST_ENV, "test123.txt", 0);
 
     FileContent *fcontent = getNextFile(&fileObj);
     TEST_ASSERT_EQUAL_STRING("test123.txt", fcontent->name);
@@ -121,12 +125,12 @@ void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
     fileObj.path = (char *)malloc(sizeof(char) * 256);
     strcpy(fileObj.path, TEST_ENV);
 
-    createTempFile(TEST_ENV, "test123.txt");
+    createTempFile(TEST_ENV, "test123.txt", 0);
     
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
-    createTempFile(buffer, "test456.txt");
+    createTempFile(buffer, "test456.txt", 0);
 
     FileContent *nextFile = getNextFile(&fileObj);
     TEST_ASSERT_NOT_NULL(nextFile);
@@ -146,13 +150,13 @@ void test_getNextFile_given_2File_1folder_2FIle_expect_get_only_files_on_that_fo
     fileObj.path = (char *)malloc(sizeof(char) * 256);
     strcpy(fileObj.path, TEST_ENV);
 
-    createTempFile(TEST_ENV, "test123.txt");
-    createTempFile(TEST_ENV, "stella.txt");
+    createTempFile(TEST_ENV, "test123.txt", 0);
+    createTempFile(TEST_ENV, "stella.txt", 0);
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
-    createTempFile(buffer, "test456.txt");
-    createTempFile(buffer, "test789.txt");
+    createTempFile(buffer, "test456.txt", 0);
+    createTempFile(buffer, "test789.txt", 0);
 
     FileContent *nextFile = getNextFile(&fileObj);
     TEST_ASSERT_NOT_NULL(nextFile);
@@ -228,14 +232,15 @@ void test_updateJson_given_1File_1Folder_1File(void){
     fileObj.path = (char *)malloc(sizeof(char) * 256);
     strcpy(fileObj.path, TEST_ENV);
 
-    createTempFile(TEST_ENV, "test123.txt");
+    createTempFile(TEST_ENV, "test123.txt", 23);
     
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
-    createTempFile(buffer, "test456.txt");
+    createTempFile(buffer, "test456.txt", 23);
     updateJson((char*)TEST_ENV);
 
+    
     closedir(fileObj.dr);
 }
 
@@ -245,27 +250,44 @@ void test_updateJson_given_1File_2Folder_2File(void)
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
     fileObj.path = (char *)TEST_ENV;
-    createTempFile(TEST_ENV, "akaikoen.txt");
-	createTempFile(TEST_ENV, "zkaikoen.txt");
+    createTempFile(TEST_ENV, "akaikoen.txt", 1000);
+	createTempFile(TEST_ENV, "zkaikoen.txt", 500);
 
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
-    createTempFile(buffer, "stella.txt");
+    createTempFile(buffer, "stella.txt", 250);
 
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy1");
     mkdir(buffer);
-    createTempFile(buffer, "jang.txt");
+    createTempFile(buffer, "jang.txt", 500);
 
     updateJson((char *)TEST_ENV);
 
     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
     json_t *json = json_object_from_file(buffer);
     json_t *akaikoenJson = json_object_get(json, "akaikoen.txt");
-    json_t *jsonSize = json_object_get(json, "size");
+    json_t *jsonSize = json_object_get(akaikoenJson, "size");
+
     TEST_ASSERT_NOT_NULL(akaikoenJson);
+    TEST_ASSERT_NOT_NULL(jsonSize);
+    TEST_ASSERT_EQUAL(1000, json_integer_value(jsonSize));
+
+    json_decref(json);
+    json_decref(akaikoenJson);
+    json_decref(jsonSize);
     
     closedir(fileObj.dr);
+}
+
+void xtest_jansson_gc(void){
+    json_t *json = json_object();
+    json_t *json1 = json_object();
+
+    json_object_set_new(json, "new", json1);
+
+    json_decref(json);
+    TEST_ASSERT_NULL(json1);
 }
 
 /*

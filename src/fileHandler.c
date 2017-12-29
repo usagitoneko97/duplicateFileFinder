@@ -161,7 +161,6 @@ void updateJson(char *workingDir){
 
     char buffer[255];
     fileParentJson = json_object();
-    fileParentJson = json_object(); //create json object
     FileContent *file = NULL;
     FolderContent *folder;
     FileObj fileObj;
@@ -175,15 +174,19 @@ void updateJson(char *workingDir){
                             json_integer(file->size)); 
 
         json_object_set_new(fileParentJson, file->name, filePropertiesJson);
+
         sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
 
         file = getNextFile(&fileObj);
-		
-        // process json here
     }
     json_object_to_file(buffer, fileParentJson);
+    free(fileParentJson);
+    free(filePropertiesJson);
+    // printf(json_dumps(fileParentJson, JSON_INDENT(4)));
+    // json_decref(fileParentJson);
+
     //reload the dr
-	fileObj.dr = opendir(workingDir);
+    fileObj.dr = opendir(workingDir);
     folder = getNextFolder(&fileObj);
     while(folder != NULL){
 		sprintf(buffer, "%s/%s", workingDir, folder->name);
