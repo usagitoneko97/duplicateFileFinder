@@ -147,7 +147,6 @@ void _removeDir(DIR *dr, char *path)
         else
         {
             //printf("%s\n", de->d_name);
-            strcat(tempPath, "/");
             _removeDir(opendir(tempPath), tempPath);
             rmdir(tempPath);
         }
@@ -174,16 +173,19 @@ void updateJson(char *workingDir){
                             json_integer(file->size)); 
 
         json_object_set_new(fileParentJson, file->name, filePropertiesJson);
-
+        printf(json_dumps(fileParentJson, JSON_INDENT(4)));
         sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
 
         file = getNextFile(&fileObj);
     }
     json_object_to_file(buffer, fileParentJson);
-    free(fileParentJson);
-    free(filePropertiesJson);
+    // FIXME json_decref(fileParentJson) will cause malloc after that bad memory access
+    // free(fileParentJson);
+    // json_decref(filePropertiesJson);
+
+
+    
     // printf(json_dumps(fileParentJson, JSON_INDENT(4)));
-    // json_decref(fileParentJson);
 
     //reload the dr
     fileObj.dr = opendir(workingDir);

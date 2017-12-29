@@ -290,6 +290,53 @@ void xtest_jansson_gc(void){
     TEST_ASSERT_NULL(json1);
 }
 
+#include <time.h>
+
+void delay500ms()
+{
+    // Converting time into milli_seconds
+    int milli_seconds = 100;
+
+    // Stroing start time
+    clock_t start_time = clock();
+
+    // looping till required time is not acheived
+    while (clock() < start_time + milli_seconds);
+}
+
+
+void xtest_memoryLeak_jansson(void){
+    json_t *fileParentJson;
+    json_t *filePropertiesJson;
+
+    while(1){
+    fileParentJson = json_object();
+
+    filePropertiesJson = json_object();
+    json_object_set_new(filePropertiesJson, "size",
+                        json_integer(2));
+    json_object_set_new(fileParentJson, "file->name", filePropertiesJson);
+
+    filePropertiesJson = json_object();
+    json_object_set_new(filePropertiesJson, "size",
+                        json_integer(3));
+    json_object_set_new(fileParentJson, "name21", filePropertiesJson);
+
+    filePropertiesJson = json_object();
+    json_object_set_new(filePropertiesJson, "size",
+                        json_integer(3));
+    json_object_set_new(fileParentJson, "name21s", filePropertiesJson);
+
+    json_decref(fileParentJson);
+    json_decref(filePropertiesJson);
+
+    delay500ms();
+    // printf("stella jang!");
+    }
+}
+
+
+
 /*
 void test_jsonObjectToFile(void){
     json_object *json;
