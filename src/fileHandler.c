@@ -4,6 +4,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <malloc.h>
+#include <jansson.h>
+#include "_jansson.h"
 
 int isRegularFile(const char *path)
 {
@@ -114,25 +116,6 @@ FolderContent *getNextFolder(FileObj *fileObj)
     return NULL;
 }
 
-void openSrc(){
-
-    struct dirent *de; // Pointer for directory entry
-
-    // opendir() returns a pointer of DIR type.
-    DIR *dr = opendir("test/support");
-
-    if (dr == NULL) // opendir returns NULL if couldn't open directory
-    {
-        printf("Could not open current directory");
-        return;
-    }
-
-    while ((de = readdir(dr)) != NULL)
-        if (isRegularFile("build/Readme.txt"))
-            printf("done!");
-
-    closedir(dr);
-}
 
 void removeDir(char *path)
 {
@@ -173,12 +156,12 @@ void _removeDir(DIR *dr, char *path)
 }
 
 void updateJson(char *workingDir){
-    json_object *fileParentJson;
-    json_object *filePropertiesJson;
-    
-	fileParentJson = json_object_new_object();
+    json_t *fileParentJson;
+    json_t *filePropertiesJson;
+
     char buffer[255];
-    fileParentJson = json_object_new_object(); //create json object
+    fileParentJson = json_object();
+    fileParentJson = json_object(); //create json object
     FileContent *file = NULL;
     FolderContent *folder;
     FileObj fileObj;
@@ -187,11 +170,11 @@ void updateJson(char *workingDir){
     
 	file = getNextFile(&fileObj);
     while(file != NULL){
-		filePropertiesJson = json_object_new_object();
-        json_object_object_add(filePropertiesJson, "size",
-                    json_object_new_int(file->size)); //add "title" : "testies"
+        filePropertiesJson = json_object();
+        json_object_set_new(filePropertiesJson, "size",
+                            json_integer(file->size)); 
 
-        json_object_object_add(fileParentJson, file->name, filePropertiesJson);
+        json_object_set_new(fileParentJson, file->name, filePropertiesJson);
         sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
 
         file = getNextFile(&fileObj);

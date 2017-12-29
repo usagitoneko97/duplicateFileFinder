@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <malloc.h>
-
-#include <json-c/json.h>
+#include <jansson.h>
+#include "_jansson.h"
 
 char *TEST_ENV = "tempFolder";
 void setUp(void){
@@ -239,6 +239,7 @@ void test_updateJson_given_1File_1Folder_1File(void){
     closedir(fileObj.dr);
 }
 
+
 void test_updateJson_given_1File_2Folder_2File(void)
 {
     FileObj fileObj;
@@ -259,15 +260,15 @@ void test_updateJson_given_1File_2Folder_2File(void)
     updateJson((char *)TEST_ENV);
 
     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    json_object *json = json_object_from_file(buffer);
-    json_object *akaikoenJson = json_object_object_get(json, "akaikoen.txt");
-    json_object *jsonSize = json_object_object_get(json, "size");
+    json_t *json = json_object_from_file(buffer);
+    json_t *akaikoenJson = json_object_get(json, "akaikoen.txt");
+    json_t *jsonSize = json_object_get(json, "size");
     TEST_ASSERT_NOT_NULL(akaikoenJson);
-    printf("json size : %s \n", json_object_to_json_string(jsonSize));
-
+    
     closedir(fileObj.dr);
 }
 
+/*
 void test_jsonObjectToFile(void){
     json_object *json;
     json = json_object_new_object(); //create json object
@@ -276,4 +277,4 @@ void test_jsonObjectToFile(void){
     json_object_object_add(json, "body", json_object_new_string("testies ... testies ... 1,2,3"));
     json_object_object_add(json, "userId", json_object_new_int(133));
     json_object_to_file("out.json", json);
-}
+}*/

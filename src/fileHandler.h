@@ -2,7 +2,6 @@
 #define _FILEHANDLER_H
 
 #include <dirent.h>
-#include <json-c/json.h>
 
 #define JSON_FILE_NAME      ".property.json"
 

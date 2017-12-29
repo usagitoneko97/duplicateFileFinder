@@ -69,7 +69,7 @@
       - -lws2_32                      #link with winsock header
       - -lm                           #link with math header
       - -LC:/Msys/extlib              #location of external libraries
-      - -ljson-c                      #link with json-c library
+      - -ljansson
       - -o ${2}                       #executable file output (Ruby method call param list sub)
 
 # LIBRARIES
