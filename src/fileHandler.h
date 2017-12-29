@@ -23,15 +23,21 @@ typedef struct{
     Date dateModified;
 } FileContent;
 
+typedef struct
+{
+    char *name;
+} FolderContent;
 
 void updateFileInfo();
 void _updateFileInfo(DIR *dr, char* path);
 int isRegularFile(const char *path);
-FileContent* getNextFile(FileObj *fileObj, const char *mode);
+FileContent* getNextFile(FileObj *fileObj);
+FolderContent *getNextFolder(FileObj *fileObj);
 void openSrc();
 
 void removeDir(char *path);
 void _removeDir(DIR *dr, char *path);
 int getSize(FILE *fp);
+
 
 #endif // _FILEHANDLER_H

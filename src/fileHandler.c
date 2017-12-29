@@ -41,7 +41,7 @@ void _updateFileInfo(DIR *dr, char* path){
     return;
 }
 
-FileContent* getNextFile(FileObj *fileObj, const char *mode)
+FileContent* getNextFile(FileObj *fileObj)
 {
     struct dirent *de;
     DIR *currentDr;
@@ -67,6 +67,45 @@ FileContent* getNextFile(FileObj *fileObj, const char *mode)
             }
         }
         else{
+            return NULL;
+        }
+    } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..") || fileReturn == NULL);
+    return NULL;
+}
+
+FolderContent *getNextFolder(FileObj *fileObj)
+{
+    struct dirent *de;
+    DIR *currentDr;
+    FolderContent *fileReturn = NULL;
+    char *currentDir;
+    do
+    {
+        if ((de = readdir(fileObj->dr)) != NULL)
+        {
+
+            //still has file/folder
+            if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."))
+            {
+                continue;
+            }
+            char temp[256];
+            sprintf(temp, "%s/%s", fileObj->path, de->d_name);
+            if (isRegularFile(temp))
+            {
+                continue;
+            }
+            else
+            {
+                fileReturn = (FolderContent *)(malloc(sizeof(FileContent)));
+                // TODO : member others than name
+                fileReturn->name = de->d_name;
+                return fileReturn;
+                
+            }
+        }
+        else
+        {
             return NULL;
         }
     } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..") || fileReturn == NULL);
@@ -132,11 +171,11 @@ void _removeDir(DIR *dr, char *path)
 }
 
 void updateJson(const char *workingDir){
-    FILE *file;
+    FileContent *file;
     FileObj fileObj;
     fileObj.dr = opendir(workingDir);
-    fileObj.path = (char *)malloc(sizeof(char) * 256);
-    strcpy(fileObj.path, workingDir);
+    fileObj.path = (char *)workingDir;
+    
     while(file != NULL){
         // file = getNextFile(&fileObj, "r");
         //process json here
