@@ -41,10 +41,11 @@ void _updateFileInfo(DIR *dr, char* path){
     return;
 }
 
-FILE *getNextFile(FileObj *fileObj, const char *mode){
+FileContent* getNextFile(FileObj *fileObj, const char *mode)
+{
     struct dirent *de;
     DIR *currentDr;
-    FILE *fileReturn;
+    FileContent *fileReturn = NULL;
     char *currentDir;
     do{
         if ((de = readdir(fileObj->dr)) != NULL){
@@ -54,31 +55,21 @@ FILE *getNextFile(FileObj *fileObj, const char *mode){
                 continue;
             }
             char temp[256];
-            strcpy(temp, fileObj->path);
-            strcat(temp, "/");
-            strcat(temp, de->d_name);
+            sprintf(temp, "%s/%s", fileObj->path, de->d_name);
             if (isRegularFile(temp)){
-                return fopen(temp, mode);
+                fileReturn = (FileContent *)(malloc(sizeof(FileContent)));
+                // TODO : member others than name
+                fileReturn->name = de->d_name;
+                return fileReturn;
             }
             else{
-                //backup the current path
-                currentDir = fileObj->path;
-                currentDr = fileObj->dr;
-                fileObj->dr = opendir(temp);
-                fileObj->path = temp;
-                fileReturn = getNextFile(fileObj, mode);
-                //reload with the upper dir value
-                closedir(fileObj->dr);
-                fileObj->dr = currentDr;
-                fileObj->path = currentDir;
-                return fileReturn;
+                continue;
             }
         }
         else{
-            //de = NULL, close current dir, opendir(..) , return NULL
-            break;
+            return NULL;
         }
-    } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."));
+    } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..") || fileReturn == NULL);
     return NULL;
 }
 
@@ -147,7 +138,7 @@ void updateJson(const char *workingDir){
     fileObj.path = (char *)malloc(sizeof(char) * 256);
     strcpy(fileObj.path, workingDir);
     while(file != NULL){
-        file = getNextFile(&fileObj, "r");
+        // file = getNextFile(&fileObj, "r");
         //process json here
     }
 }

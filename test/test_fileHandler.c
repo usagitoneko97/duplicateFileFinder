@@ -34,11 +34,7 @@ void removeTempFile(const char*pathName){
     remove(pathName);
 }
 
-void xtest_getNextFile_given_no_file_expect_NULL(void)
-{
-    FileObj fileObj;
-    TEST_ASSERT_NULL(getNextFile(&fileObj, "r"));
-}
+
 
 
 void test_removeDir_given_2_file_expect_empty(void){
@@ -75,6 +71,28 @@ void test_removeDir_given_1File_1Folder_with_1File_expect_empty(void){
     TEST_ASSERT_NULL(dir);
 }
 
+//---------------------getNextFile test cases-------------------------//
+
+/** 
+ *      tempFolder
+ *     |          |
+ */
+void test_getNextFile_given_no_file_expect_NULL(void)
+{
+    FileObj fileObj;
+    fileObj.dr = opendir(TEST_ENV);
+    fileObj.path = (char *)malloc(sizeof(char) * 256);
+    strcpy(fileObj.path, TEST_ENV);
+
+    FileContent *fcontent = getNextFile(&fileObj, "r");
+
+    TEST_ASSERT_NULL(getNextFile(&fileObj, "r"));
+}
+/** 
+ *     tempFolder
+ *   |test123.txt|
+ * 
+ */
 void test_getNextFile_given_1File_expect_firstFile(void)
 {
     FileObj fileObj;
@@ -83,14 +101,18 @@ void test_getNextFile_given_1File_expect_firstFile(void)
     strcpy(fileObj.path, TEST_ENV);
     createTempFile(TEST_ENV, "test123.txt");
 
-    FILE *nextFile = getNextFile(&fileObj, "r");
-    TEST_ASSERT_NOT_NULL(nextFile);
-    fclose(nextFile);
+    FileContent *fcontent = getNextFile(&fileObj, "r");
+    TEST_ASSERT_EQUAL_STRING("test123.txt", fcontent->name);
     closedir(fileObj.dr);
 
     // remove(TEST_ENV);
 }
 
+/** 
+ *    tempFolder              dummy
+ *   |test123.txt|      --> |test123.txt|    
+ *   |   dummy   | -----|  
+ */
 void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
@@ -98,23 +120,24 @@ void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
     strcpy(fileObj.path, TEST_ENV);
 
     createTempFile(TEST_ENV, "test123.txt");
+    
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
     createTempFile(buffer, "test456.txt");
 
-    FILE *nextFile = getNextFile(&fileObj, "r");
+    FileContent *nextFile = getNextFile(&fileObj, "r");
     TEST_ASSERT_NOT_NULL(nextFile);
-    fclose(nextFile);
+    TEST_ASSERT_EQUAL_STRING("test123.txt", nextFile->name);
 
     nextFile = getNextFile(&fileObj, "r");
-    TEST_ASSERT_NOT_NULL(nextFile);
-    fclose(nextFile);
+    TEST_ASSERT_NULL(nextFile);
 
     closedir(fileObj.dr);
 }
 
-void xtest_getNextFile_given_1File_1folder_2FIle_expect_get_all_files(void)
+
+void test_getNextFile_given_2File_1folder_2FIle_expect_get_only_files_on_that_folder(void)
 {
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
@@ -122,27 +145,25 @@ void xtest_getNextFile_given_1File_1folder_2FIle_expect_get_all_files(void)
     strcpy(fileObj.path, TEST_ENV);
 
     createTempFile(TEST_ENV, "test123.txt");
+    createTempFile(TEST_ENV, "stella.txt");
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
     createTempFile(buffer, "test456.txt");
     createTempFile(buffer, "test789.txt");
 
-    FILE *nextFile = getNextFile(&fileObj, "r");
+    FileContent *nextFile = getNextFile(&fileObj, "r");
     TEST_ASSERT_NOT_NULL(nextFile);
-    fclose(nextFile);
+    TEST_ASSERT_EQUAL_STRING("stella.txt", nextFile->name);
 
     nextFile = getNextFile(&fileObj, "r");
     TEST_ASSERT_NOT_NULL(nextFile);
-    fclose(nextFile);
+    TEST_ASSERT_EQUAL_STRING("test123.txt", nextFile->name);
 
     nextFile = getNextFile(&fileObj, "r");
-    TEST_ASSERT_NOT_NULL(nextFile);
-    fclose(nextFile);
+    TEST_ASSERT_NULL(nextFile);
 
     closedir(fileObj.dr);
 }
 
-    //TODO : a way to check the returned FILE *
-    //TODO : getFileSize return a specific structure that contains all the info ( size, name ..)
-    //TODO : getNextFile should be using opendir(..) to get back too the upper dir when iterate thorough the current folder
+//------------------------getNextFolder test cases--------------//
