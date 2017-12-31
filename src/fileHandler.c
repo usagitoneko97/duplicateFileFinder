@@ -4,8 +4,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <malloc.h>
-#include <jansson.h>
-#include "_jansson.h"
+
 
 int isRegularFile(const char *path)
 {
@@ -43,11 +42,11 @@ void _updateFileInfo(DIR *dr, char* path){
     return;
 }
 
-FileContent* getNextFile(FileObj *fileObj)
+FileProperty* getNextFile(FileObj *fileObj)
 {
     struct dirent *de;
     DIR *currentDr;
-    FileContent *fileReturn = NULL;
+    FileProperty *fileReturn = NULL;
     char *currentDir;
     do{
         if ((de = readdir(fileObj->dr)) != NULL){
@@ -59,7 +58,7 @@ FileContent* getNextFile(FileObj *fileObj)
             char temp[256];
             sprintf(temp, "%s/%s", fileObj->path, de->d_name);
             if (isRegularFile(temp)){
-                fileReturn = (FileContent *)(malloc(sizeof(FileContent)));
+                fileReturn = (FileProperty *)(malloc(sizeof(FileProperty)));
                 // TODO : member others than name
                 fileReturn->name = de->d_name;
                 fileReturn->size = getSize(temp);
@@ -100,7 +99,7 @@ FolderContent *getNextFolder(FileObj *fileObj)
             }
             else
             {
-                fileReturn = (FolderContent *)(malloc(sizeof(FileContent)));
+                fileReturn = (FolderContent *)(malloc(sizeof(FileProperty)));
                 // TODO : member others than name
                 fileReturn->name = de->d_name;
 
@@ -154,48 +153,69 @@ void _removeDir(DIR *dr, char *path)
     return;
 }
 
-void updateJson(char *workingDir){
-    json_t *fileParentJson;
+void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson){
     json_t *filePropertiesJson;
+    
+    filePropertiesJson = json_object();
+    json_object_set_new(filePropertiesJson, "size",
+                        json_integer(fp->size)); 
 
-    char buffer[255];
+    json_object_set_new(fileParentJson, fp->name, filePropertiesJson);
+}
+
+json_t* createJsonObjectOnFolder(FileObj *fileObj){
+    json_t *fileParentJson;
     fileParentJson = json_object();
-    FileContent *file = NULL;
+    FileProperty *file = NULL;
+    
+    file = getNextFile(fileObj);
+    while(file != NULL){
+        createJsonObjectFromFileProp(file, fileParentJson);
+        file = getNextFile(fileObj);
+    }
+    return fileParentJson;
+}
+
+void loadFileObjWithPath(char *workingDir, FileObj *fileObj){
+    fileObj->dr = opendir(workingDir);
+    fileObj->path = workingDir;
+}
+
+
+void createJson(char *workingDir){
+    json_t *fileParentJson;
+    char buffer[255];
     FolderContent *folder;
     FileObj fileObj;
-    fileObj.dr = opendir(workingDir);
-    fileObj.path = workingDir;
-    
-	file = getNextFile(&fileObj);
-    while(file != NULL){
-        filePropertiesJson = json_object();
-        json_object_set_new(filePropertiesJson, "size",
-                            json_integer(file->size)); 
+    loadFileObjWithPath(workingDir, &fileObj);
 
-        json_object_set_new(fileParentJson, file->name, filePropertiesJson);
-        printf(json_dumps(fileParentJson, JSON_INDENT(4)));
-        sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
-
-        file = getNextFile(&fileObj);
-    }
+    fileParentJson = createJsonObjectOnFolder(&fileObj);
+    sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
     json_object_to_file(buffer, fileParentJson);
     // FIXME json_decref(fileParentJson) will cause malloc after that bad memory access
     // free(fileParentJson);
     // json_decref(filePropertiesJson);
 
-
-    
     // printf(json_dumps(fileParentJson, JSON_INDENT(4)));
-
     //reload the dr
     fileObj.dr = opendir(workingDir);
     folder = getNextFolder(&fileObj);
     while(folder != NULL){
 		sprintf(buffer, "%s/%s", workingDir, folder->name);
-        updateJson(buffer);
+        createJson(buffer);
         folder = getNextFolder(&fileObj);
     }
     return;
+}
+
+/** 
+ * @brief  only called this func when .property.json exist
+ * @note   
+ * @param  *path: path to the folder
+ * @retval None
+ */
+void updateJson(char *path){
+
 }
 
 int getSize(char *path){

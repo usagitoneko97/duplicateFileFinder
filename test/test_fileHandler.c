@@ -90,7 +90,7 @@ void test_getNextFile_given_no_file_expect_NULL(void)
     fileObj.path = (char *)malloc(sizeof(char) * 256);
     strcpy(fileObj.path, TEST_ENV);
 
-    FileContent *fcontent = getNextFile(&fileObj);
+    FileProperty *fcontent = getNextFile(&fileObj);
 
     TEST_ASSERT_NULL(getNextFile(&fileObj));
 }
@@ -107,7 +107,7 @@ void test_getNextFile_given_1File_expect_firstFile(void)
     strcpy(fileObj.path, TEST_ENV);
     createTempFile(TEST_ENV, "test123.txt", 0);
 
-    FileContent *fcontent = getNextFile(&fileObj);
+    FileProperty *fcontent = getNextFile(&fileObj);
     TEST_ASSERT_EQUAL_STRING("test123.txt", fcontent->name);
     closedir(fileObj.dr);
 
@@ -132,7 +132,7 @@ void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
     mkdir(buffer);
     createTempFile(buffer, "test456.txt", 0);
 
-    FileContent *nextFile = getNextFile(&fileObj);
+    FileProperty *nextFile = getNextFile(&fileObj);
     TEST_ASSERT_NOT_NULL(nextFile);
     TEST_ASSERT_EQUAL_STRING("test123.txt", nextFile->name);
 
@@ -158,7 +158,7 @@ void test_getNextFile_given_2File_1folder_2FIle_expect_get_only_files_on_that_fo
     createTempFile(buffer, "test456.txt", 0);
     createTempFile(buffer, "test789.txt", 0);
 
-    FileContent *nextFile = getNextFile(&fileObj);
+    FileProperty *nextFile = getNextFile(&fileObj);
     TEST_ASSERT_NOT_NULL(nextFile);
     TEST_ASSERT_EQUAL_STRING("stella.txt", nextFile->name);
 
@@ -219,14 +219,14 @@ void test_get_nextFolder_given_2folder_expect_return_2Folder(void){
     closedir(fileObj.dr);
 }
 
-//-----------------------updateJson test cases--------------//
+//-----------------------createJson test cases--------------//
 
 /** 
  *    tempFolder              dummy
  *   |test123.txt|      --> |test123.txt|    
  *   |   dummy   | -----|  
  */
-void test_updateJson_given_1File_1Folder_1File(void){
+void test_createJson_given_1File_1Folder_1File(void){
 	FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
     fileObj.path = (char *)malloc(sizeof(char) * 256);
@@ -238,14 +238,14 @@ void test_updateJson_given_1File_1Folder_1File(void){
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
     createTempFile(buffer, "test456.txt", 23);
-    updateJson((char*)TEST_ENV);
+    createJson((char*)TEST_ENV);
 
     
     closedir(fileObj.dr);
 }
 
 
-void test_updateJson_given_1File_2Folder_2File(void)
+void test_createJson_given_1File_2Folder_2File(void)
 {
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
@@ -262,7 +262,7 @@ void test_updateJson_given_1File_2Folder_2File(void)
     mkdir(buffer);
     createTempFile(buffer, "jang.txt", 500);
 
-    updateJson((char *)TEST_ENV);
+    createJson((char *)TEST_ENV);
 
     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
     json_t *json = json_object_from_file(buffer);
@@ -280,7 +280,58 @@ void test_updateJson_given_1File_2Folder_2File(void)
     closedir(fileObj.dr);
 }
 
-void xtest_jansson_gc(void){
+/** 
+ *     tempFolder      
+ *    |stella.txt    |
+ *    |.property.json|   
+ * 
+ *   Given :
+ *      .property.json is empty
+ */
+
+ void xtest_updateJson_given_propertyJson_empty_folder_with_1File_expect_update_stella(void){
+     FileObj fileObj;
+     fileObj.dr = opendir(TEST_ENV);
+     fileObj.path = (char *)TEST_ENV;
+     createTempFile(TEST_ENV, "stella.txt", 1000);
+     //create an empty .property.json
+     createTempFile(TEST_ENV, ".property.json", 0);
+
+     updateJson((char *)TEST_ENV);
+
+     char buffer[256];
+     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
+     json_t *json = json_object_from_file(buffer);
+     TEST_ASSERT_NOT_NULL(json);
+     json_t *stellaJson = json_object_get(json, "stella.txt");
+     json_t *jsonSize = json_object_get(stellaJson, "size");
+
+     TEST_ASSERT_NOT_NULL(stellaJson);
+     TEST_ASSERT_NOT_NULL(jsonSize);
+     TEST_ASSERT_EQUAL(1000, json_integer_value(jsonSize));
+
+     closedir(fileObj.dr);
+ }
+
+
+/** 
+ *  tempFolder         -- Folder1
+ *  |stella.txt|      ^   |jang.txt|
+ *  |  Folder1 |-----|
+ */
+void xtest_(){
+
+}
+
+
+
+
+
+//------------------------dummy test-------------------------//
+#include <time.h>
+
+void xtest_jansson_gc(void)
+{
     json_t *json = json_object();
     json_t *json1 = json_object();
 
@@ -289,9 +340,6 @@ void xtest_jansson_gc(void){
     json_decref(json);
     TEST_ASSERT_NULL(json1);
 }
-
-#include <time.h>
-
 void delay500ms()
 {
     // Converting time into milli_seconds
