@@ -10,8 +10,8 @@ int json_object_to_file(char *buffer, json_t *json){
 
 json_t* json_object_from_file(char *buffer){
     json_error_t *error;
-    FILE *fileP = fopen(buffer, "r");
-    json_t *obj = json_loadf(fileP, JSON_DECODE_ANY, error);
-    fclose(fileP);
+    FILE *file = fopen(buffer, "r");
+    json_t *obj = json_loadf(file, JSON_DECODE_ANY, error);
+    fclose(file);
     return obj;
 }

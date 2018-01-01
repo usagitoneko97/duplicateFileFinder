@@ -37,6 +37,7 @@ void updateFileInfo();
 void _updateFileInfo(DIR *dr, char* path);
 int isRegularFile(const char *path);
 FileProperty* getNextFile(FileObj *fileObj);
+FileProperty *getnextFileIgnoreProperty(FileObj *fileObj);
 FolderContent *getNextFolder(FileObj *fileObj);
 void openSrc();
 
