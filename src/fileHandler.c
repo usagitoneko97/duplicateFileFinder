@@ -207,6 +207,7 @@ void createJson(char *workingDir){
     fileParentJson = createJsonObjectOnFolder(&fileObj);
     sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
     json_object_to_file(buffer, fileParentJson);
+    
     // FIXME json_decref(fileParentJson) will cause malloc after that bad memory access
     // free(fileParentJson);
     // json_decref(filePropertiesJson);
@@ -224,7 +225,6 @@ void createJson(char *workingDir){
     }
     fileObj.dr = opendir(workingDir);
     closedir(fileObj.dr);
-    
     return;
 }
 

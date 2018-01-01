@@ -268,7 +268,7 @@ void test_createJson_given_1File_2Folder_2File(void)
     createJson((char *)TEST_ENV);
 
     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    json_t *json = json_object();
+    json_t *json;
     json = json_object_from_file(buffer);
     json_t *akaikoenJson = json_object_get(json, "akaikoen.txt");
     json_t *jsonSize = json_object_get(akaikoenJson, "size");
@@ -301,7 +301,7 @@ void test_createJson_given_1File_2Folder_2File(void)
 
      char buffer[256];
      sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-     json_t *json = json_object();
+     json_t *json;
      json = json_object_from_file(buffer);
      TEST_ASSERT_NOT_NULL(json);
      json_t *stellaJson = json_object_get(json, "stella.txt");
