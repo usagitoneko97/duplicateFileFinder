@@ -23,7 +23,6 @@ void tearDown(void){
 }
 
 void createTempFile(const char *path, const char *name, int size){
-    //char *completePath = (char*)malloc(sizeof(char) * 256);
     char completePath[256];
     strcpy(completePath, path);
     strcat(completePath, "/");
@@ -96,6 +95,7 @@ void test_getNextFile_given_no_file_expect_NULL(void)
     TEST_ASSERT_NULL(fcontent);
 
     free(fcontent);
+    free(fileObj.path);
 }
 /** 
  *     tempFolder
@@ -114,6 +114,7 @@ void test_getNextFile_given_1File_expect_firstFile(void)
     TEST_ASSERT_EQUAL_STRING("test123.txt", fcontent->name);
     closedir(fileObj.dr);
     free(fcontent);
+    free(fileObj.path);
 
     // remove(TEST_ENV);
 }
@@ -143,6 +144,7 @@ void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
     nextFile = getNextFile(&fileObj);
     TEST_ASSERT_NULL(nextFile);
     free(nextFile);
+    free(fileObj.path);
 
     closedir(fileObj.dr);
 }
@@ -177,6 +179,7 @@ void test_getNextFile_given_2File_1folder_2FIle_expect_get_only_files_on_that_fo
     free(nextFile);
 
     closedir(fileObj.dr);
+    free(fileObj.path);
 }
 
 //------------------------getNextFolder test cases--------------//
@@ -189,7 +192,7 @@ void test_getNextFolder_given_noFolder_expect_return_null(void){
     free(nextFile);
 }
 
-void xtest_getNextFolder_given_1folder_expect_return_folder(void){
+void test_getNextFolder_given_1folder_expect_return_folder(void){
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
     fileObj.path = (char *)TEST_ENV;
@@ -206,7 +209,7 @@ void xtest_getNextFolder_given_1folder_expect_return_folder(void){
     free(nextFolder);
 }
 
-void xtest_get_nextFolder_given_2folder_expect_return_2Folder(void){
+void test_get_nextFolder_given_2folder_expect_return_2Folder(void){
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
     fileObj.path = (char *)TEST_ENV;
@@ -265,7 +268,6 @@ void test_createJson_given_1File_2Folder_2File(void)
     createJson((char *)TEST_ENV);
 
     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    // json_t *json = (json_t*)malloc(sizeof(json_t) * 265);
     json_t *json = json_object();
     json = json_object_from_file(buffer);
     json_t *akaikoenJson = json_object_get(json, "akaikoen.txt");
@@ -320,8 +322,9 @@ void test_createJson_given_1File_2Folder_2File(void)
  *   Given :
  *      .property.json is empty
  */
- void xtest_updateJson_given_propertyJson_empty_inside_2file_expect_propertyJson_loaded(void)
+ void test_updateJson_given_propertyJson_empty_inside_2file_expect_propertyJson_loaded(void)
  {
+//     DIR *dr = opendir(TEST_ENV);
      createTempFile(TEST_ENV, "stella.txt", 1000);
      createTempFile(TEST_ENV, "jang.txt", 500);
      //create an empty .property.json
@@ -331,7 +334,8 @@ void test_createJson_given_1File_2Folder_2File(void)
 
      char buffer[256];
      sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-     json_t *json = json_object_from_file(buffer);
+     json_t *json = json_object();
+     json = json_object_from_file(buffer);
      TEST_ASSERT_NOT_NULL(json);
      json_t *stellaJson = json_object_get(json, "stella.txt");
      json_t *jangJson = json_object_get(json, "jang.txt");
@@ -351,8 +355,6 @@ void test_createJson_given_1File_2Folder_2File(void)
      json_decref(jsonSize);
      json_decref(jangjsonSize);
 
-     DIR *dr = opendir(TEST_ENV);
-     closedir(dr);
  }
 
  /** 
@@ -366,7 +368,7 @@ void test_createJson_given_1File_2Folder_2File(void)
  * 
  * expect : .property.json empty
  */
- void xtest_updateJson_given_propertyJson_stellaTxt_Folder_empty_expect_propertyJson_empty(void){
+ void test_updateJson_given_propertyJson_stellaTxt_Folder_empty_expect_propertyJson_empty(void){
     json_t *filePropertiesJson;
     json_t *fileParent;
     fileParent = json_object();
@@ -380,11 +382,10 @@ void test_createJson_given_1File_2Folder_2File(void)
     json_object_to_file(buffer, fileParent);
 
     updateJson((char *)TEST_ENV);
-    json_t *json = json_object_from_file(buffer);
-    TEST_ASSERT_NULL(json);
-    // json_t *stellaJson = json_object_get(json, "stella.txt");
-
-    // closedir(fileObj.dr);
+    json_t *json = json_object();
+    json = json_object_from_file(buffer);
+    json_t *stellaJson = json_object_get(json, "stella.txt");
+    TEST_ASSERT_NULL(stellaJson);
  }
 /** 
  *  tempFolder         -- Folder1

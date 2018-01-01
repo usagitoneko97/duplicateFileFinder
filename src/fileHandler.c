@@ -240,7 +240,7 @@ void updateJson(char *path){
     FileProperty *file = NULL;
     loadFileObjWithPath(path, &fileObj);
     char buffer[256];
-    json_t *json;
+    json_t *json = json_object();
     sprintf(buffer, "%s/%s", path, JSON_FILE_NAME);
     json = json_object_from_file(buffer);
 
@@ -278,15 +278,20 @@ void updateJson(char *path){
             //file not exist
             json_object_del(json, key);
         }
-        fclose(checkFile);
+        else{
+            fclose(checkFile);
+        }
     }
 
-    closedir(fileObj.dr);
+    if(closedir(fileObj.dr) == -1){
+        //error
+        printf("error occurs on closedir");
+    }
     // if()
     sprintf(buffer, "%s/%s", path, JSON_FILE_NAME);
     json_object_to_file(buffer, json);
 
-    free(json);
+    json_decref(json);
 }
 
 int getSize(char *path){
