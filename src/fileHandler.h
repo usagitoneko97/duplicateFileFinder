@@ -45,11 +45,9 @@ void removeDir(char *path);
 void _removeDir(DIR *dr, char *path);
 int getSize(char *path);
 
-void createJson(char *workingDir);
-void updateJson(char *path);
+
 
 void loadFileObjWithPath(char *workingDir, FileObj *fileObj);
-json_t* createJsonObjectOnFolder(FileObj *fileObj);
-void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson);
+
 
 #endif // _FILEHANDLER_H
