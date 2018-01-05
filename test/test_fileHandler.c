@@ -366,7 +366,7 @@ void test_createJson_given_1File_2Folder_2File(void)
  *          .....
  *          }
  * 
- * expect : .property.json empty
+ * expect : delete stella.txt in .property.json
  */
  void test_updateJson_given_propertyJson_stellaTxt_Folder_empty_expect_propertyJson_empty(void){
     json_t *filePropertiesJson;
@@ -386,7 +386,54 @@ void test_createJson_given_1File_2Folder_2File(void)
     json = json_object_from_file(buffer);
     json_t *stellaJson = json_object_get(json, "stella.txt");
     TEST_ASSERT_NULL(stellaJson);
- }
+}
+
+/** 
+ *    tempFolder
+ *    |jang.txt|
+ * 
+ * given :.property.json
+ *      stella.txt{
+ *              ...
+ *          }
+ * expect : .property.json
+ *           jang.txt{
+ *                  ...
+ *              }
+ *              
+ */
+void test_updateJson_given_propertyJson_stellaTxt_Folder_jangTxt_expect_propertyJson_remove_stellaTxt_add_jangTxt(void){
+    json_t *filePropertiesJson;
+    json_t *fileParent;
+    fileParent = json_object();
+    filePropertiesJson = json_object();
+    json_object_set_new(filePropertiesJson, "size",
+                        json_integer(500));
+    json_object_set_new(fileParent, "stella.txt", filePropertiesJson);
+
+    char buffer[256];
+    sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
+    json_object_to_file(buffer, fileParent);
+
+    //create jang.txt in tempFolder
+    createTempFile(TEST_ENV, "jang.txt", 500);
+
+    updateJson((char *)TEST_ENV);
+
+    json_t *json = json_object();
+    json = json_object_from_file(buffer);
+    json_t *stellaJson = json_object_get(json, "stella.txt");
+    TEST_ASSERT_NULL(stellaJson);
+
+    json_t *jangJson = json_object_get(json, "jang.txt");
+    TEST_ASSERT_NOT_NULL(jangJson);
+
+    json_t *jangjsonSize = json_object_get(jangJson, "size");
+    TEST_ASSERT_EQUAL(500, json_integer_value(jangjsonSize));
+
+    json_decref(json);
+}
+
 /** 
  *  tempFolder         -- Folder1
  *  |stella.txt|      ^   |jang.txt|
