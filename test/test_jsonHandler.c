@@ -123,10 +123,6 @@ void test_updateJson_given_propertyJson_empty_folder_with_1File_expect_update_st
  */
 void test_updateJson_given_propertyJson_empty_inside_2file_expect_propertyJson_loaded(void)
 {
-    //     DIR *dr = opendir(TEST_ENV);
-
-    createTempFile(TEST_ENV, "stella.txt", 1000);
-    createTempFile(TEST_ENV, "jang.txt", 500);
     FileProperty fp[] = {createTempFile(TEST_ENV, "stella.txt", 1000), 
                         createTempFile(TEST_ENV, "jang.txt", 500)};
     //create an empty .property.json
@@ -152,19 +148,16 @@ void test_updateJson_given_propertyJson_stellaTxt_Folder_empty_expect_propertyJs
 {
     json_t *filePropertiesJson;
     json_t *fileParent;
-    fileParent = json_object();
-    filePropertiesJson = json_object();
-    json_object_set_new(filePropertiesJson, "size",
-                        json_integer(500));
-    json_object_set_new(fileParent, "stella.txt", filePropertiesJson);
 
     char buffer[256];
-    sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    json_object_to_file(buffer, fileParent);
-
+    FileProperty stella = {.name="stella,txt", .size=500};
+    createJsonFileFromFp(TEST_ENV, &stella, 1);
+    
     updateJson((char *)TEST_ENV);
 
+
     json_t *json = json_object();
+    sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
     json = json_object_from_file(buffer);
     TEST_ASSERT_NULL(json_object_iter(json));
 
@@ -190,15 +183,10 @@ void test_updateJson_given_propertyJson_stellaTxt_Folder_jangTxt_expect_property
     json_t *filePropertiesJson;
     json_t *fileParent;
 
-    FileProperty fp;
-    fp.name = "stella.txt";
-    fp.size = 500;
-    fileParent = json_object();
-    createJsonObjectFromFileProp(&fp, fileParent);
+    
+    FileProperty fp = {.name="stella.txt", .size=500};
 
-    char buffer[256];
-    sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    json_object_to_file(buffer, fileParent);
+    createJsonFileFromFp(TEST_ENV, &fp, 1);
 
     //create jang.txt in tempFolder
     FileProperty jangFp = createTempFile(TEST_ENV, "jang.txt", 500);
@@ -219,11 +207,8 @@ void test_updateCreateAllJsonOnFolder_given_1File_1Folder_both_no_propertyJson(v
     FileProperty akaikoenFp = createTempFile(TEST_ENV, "akaikoen.txt", 1000);
 
     char dummyFolderPath[256];
-    char mainFolderPropertyPath[256];
-    char dummyFolderPropertyPath[256];
     sprintf(dummyFolderPath, "%s/%s", TEST_ENV, "dummy");
-    sprintf(mainFolderPropertyPath, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    sprintf(dummyFolderPropertyPath, "%s/%s", dummyFolderPath, JSON_FILE_NAME);
+
 
     mkdir(dummyFolderPath);
     FileProperty stellaFp = createTempFile(dummyFolderPath, "stella.txt", 250);
@@ -235,4 +220,81 @@ void test_updateCreateAllJsonOnFolder_given_1File_1Folder_both_no_propertyJson(v
 
     //test on dummyFolder
     TEST_ASSERT_JSON_PROPERTY_PATH(dummyFolderPath, &stellaFp, 1);
+}
+
+/** 
+ *   tempFolder      ----->   dummy   
+ *   |stella.txt|    |      |usagi.txt|
+ *   |jang.txt |     |      |toneko.txt|
+ *   | dummy   | --- |      |.property.json|
+ * 
+ *   property.json is empty
+ */
+void test_updateCreateAllJsonOnFolder_given_Files_mainFOlder_has_propertyJson_dummyFolder_no_propertyJson(void){
+    FileProperty mainFp[] = {createTempFile(TEST_ENV, "stella.txt", 1000),
+                            createTempFile(TEST_ENV, "jang.txt", 500)};
+
+    char dummyFolderPath[256];
+    sprintf(dummyFolderPath, "%s/%s", TEST_ENV, "dummy");
+
+    mkdir(dummyFolderPath);
+    FileProperty dummyFp[] = {createTempFile(dummyFolderPath, "usagi.txt", 1000),
+                              createTempFile(dummyFolderPath, "toneko.txt", 500)};
+
+    //create empty .property.json file
+    createTempFile(dummyFolderPath, JSON_FILE_NAME, 0);
+
+    updateCreateAllJsonOnFolder(TEST_ENV);
+
+    //test on tempFolder
+    TEST_ASSERT_JSON_PROPERTY_PATH(TEST_ENV, mainFp, 2);
+
+    //test on dummyFolder
+    TEST_ASSERT_JSON_PROPERTY_PATH(dummyFolderPath, dummyFp, 2);
+}
+
+/** 
+ *   tempFolder      ----->   dummy   
+ *   |stella.txt|    |      |usagi.txt|
+ *   |jang.txt |     |      |toneko.txt|
+ *   | dummy   | --- |      |.property.json|
+ *                               |
+ *            -------------------
+ *            |
+ *   property.json =
+ *        sometingElse{
+ *              ...
+ *          }
+ * 
+ *  Expect : property.json{
+ *              usagi.txt{
+ *                  ...
+ *              }
+ *              toneko.txt{
+ *                  ...
+ *              }
+ *          }
+ */
+void test_updateCreateAllJsonOnFolder_given_files_updateJson_on_subFolder(void){
+    FileProperty mainFp[] = {createTempFile(TEST_ENV, "stella.txt", 1000),
+                             createTempFile(TEST_ENV, "jang.txt", 500)};
+
+    char dummyFolderPath[256];
+    sprintf(dummyFolderPath, "%s/%s", TEST_ENV, "dummy");
+
+    mkdir(dummyFolderPath);
+    FileProperty dummyFp[] = {createTempFile(dummyFolderPath, "usagi.txt", 1000),
+                              createTempFile(dummyFolderPath, "toneko.txt", 500)};
+
+    //create .property.json file
+    FileProperty propertyJsonFp = {.name = "sometingElse", .size=500};
+    createJsonFileFromFp(dummyFolderPath, &propertyJsonFp, 1);
+
+    updateCreateAllJsonOnFolder(TEST_ENV);
+
+    //test on tempFolder
+    TEST_ASSERT_JSON_PROPERTY_PATH(TEST_ENV, mainFp, 2);
+
+    //test on dummyFolder
+    TEST_ASSERT_JSON_PROPERTY_PATH(dummyFolderPath, dummyFp, 2);
 }

@@ -134,6 +134,9 @@ void updateCreateAllJsonOnFolder(char *path)
     }
     else{
         //exist, update Json
+		fclose(propertyJsonFile);
+		updateJson(path);
+		
     }
 
     //recursive to next folder

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "unity.h"
 #include "fileHelper.h"
+#include "jsonHandler.h"
 
 
 FileProperty createTempFile(const char *path, const char *name, int size)
@@ -14,7 +15,8 @@ FileProperty createTempFile(const char *path, const char *name, int size)
     FILE *filePtr = fopen(completePath, "w");
     //generate file of this size
     fseek(filePtr, size - 1, SEEK_SET);
-    fputc('\0', filePtr);
+    if(size != 0)
+        fputc('\0', filePtr);
 
     fclose(filePtr);
 
@@ -93,4 +95,27 @@ void testAssertJsonPath(char *path, FileProperty *fp, int length, int lineNo){
     testAssertJson(jsonObject, fp, length, lineNo);
 
     json_object_clear(jsonObject);
+}
+
+/** 
+ * @brief  create a json file with given fp
+ * @note   
+ * @param  *path: path to the folder to create json file
+ * @param  fp: content of the json
+ * @retval None
+ */
+void createJsonFileFromFp(char *path, FileProperty *fp, int length)
+{
+    int i;
+    json_t *propertyJson = json_object();
+    for (i = 0; i<length; i++){
+        createJsonObjectFromFileProp(fp++, propertyJson);
+    }
+
+    createTempFile(path, JSON_FILE_NAME, 0);
+    char buffer[256];
+    sprintf(buffer, "%s/%s", path, JSON_FILE_NAME);
+    json_object_to_file(buffer, propertyJson);
+
+    json_object_clear(propertyJson);
 }
