@@ -8,4 +8,6 @@ void updateJson(char *path);
 
 json_t *createJsonObjectOnFolder(FileObj *fileObj);
 void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson);
+
+void updateCreateAllJsonOnFolder(char *path);
 #endif // _JSONHANDLER_H

@@ -18,6 +18,7 @@ void createJson(char *workingDir)
     // json_decref(filePropertiesJson);
 
     // printf(json_dumps(fileParentJson, JSON_INDENT(4)));
+    closedir(fileObj.dr);
 }
 
 /** 
@@ -118,7 +119,41 @@ json_t *createJsonObjectOnFolder(FileObj *fileObj)
     }
     return fileParentJson;
 }
-/*
+
+void updateCreateAllJsonOnFolder(char *path)
+{
+    //check if property json exist
+    char buffer[256];
+    char propertyJsonPath[256];
+    FolderContent *folder;
+    sprintf(propertyJsonPath, "%s/%s", path, JSON_FILE_NAME);
+    FILE *propertyJsonFile = fopen(propertyJsonPath, "r");
+    if(propertyJsonFile == NULL){
+        //createJson
+        createJson(path);
+    }
+    else{
+        //exist, update Json
+    }
+
+    //recursive to next folder
+
+    FileObj fileObj;
+    loadFileObjWithPath(path, &fileObj);
+
+    folder = getNextFolder(&fileObj);
+    while (folder != NULL)
+    {
+        sprintf(buffer, "%s/%s", path, folder->name);
+        updateCreateAllJsonOnFolder(buffer);
+        free(folder);
+        folder = getNextFolder(&fileObj);
+    }
+    fileObj.dr = opendir(path);
+    closedir(fileObj.dr);
+}
+
+    /*
 void createJson(char *workingDir){
     json_t *fileParentJson;
     char buffer[255];
