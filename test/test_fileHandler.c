@@ -268,7 +268,7 @@ void test_createJson_given_1File_2Folder_2File(void)
     createJson((char *)TEST_ENV);
 
     sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    json_t *json;
+    json_t *json = json_object();
     json = json_object_from_file(buffer);
     json_t *akaikoenJson = json_object_get(json, "akaikoen.txt");
     json_t *jsonSize = json_object_get(akaikoenJson, "size");
@@ -349,12 +349,12 @@ void test_createJson_given_1File_2Folder_2File(void)
      TEST_ASSERT_EQUAL(1000, json_integer_value(jsonSize));
      TEST_ASSERT_EQUAL(500, json_integer_value(jangjsonSize));
 
-     json_decref(json);
-     json_decref(stellaJson);
-     json_decref(jangJson);
-     json_decref(jsonSize);
-     json_decref(jangjsonSize);
-
+     // FIXME find out the sub object need to be decref or not
+    //   json_decref(jangjsonSize);
+    //   json_decref(jsonSize);
+    //   json_decref(jangJson);
+    //   json_decref(stellaJson);
+      json_decref(json);
  }
 
  /** 
