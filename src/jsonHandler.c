@@ -101,6 +101,9 @@ void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson)
     json_object_set_new(filePropertiesJson, "size",
                         json_integer(fp->size));
 
+    json_object_set_new(filePropertiesJson, "crc",
+                        json_integer(fp->crc));
+
     json_object_set_new(fileParentJson, fp->name, filePropertiesJson);
 }
 

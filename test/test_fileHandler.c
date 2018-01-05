@@ -13,7 +13,7 @@
 #include "fileHandler.h"
 #include "jsonHandler.h"
 #include "_jansson.h"
-
+#include "crc.h"
 
 void setUp(void){
     //create working tst folder

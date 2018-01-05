@@ -3,6 +3,7 @@
 
 #include <dirent.h>
 #include <jansson.h>
+#include <stdint.h>
 #include "_jansson.h"
 
 #define JSON_FILE_NAME      ".property.json"
@@ -25,6 +26,7 @@ typedef struct{
     char *name;
     long long size;
     Date dateModified;
+    uint32_t crc;
     //..
 } FileProperty;
 
@@ -45,9 +47,7 @@ void removeDir(char *path);
 void _removeDir(DIR *dr, char *path);
 int getSize(char *path);
 
-
-
+char *readContentOfGivenPath(char *path);
 void loadFileObjWithPath(char *workingDir, FileObj *fileObj);
-
 
 #endif // _FILEHANDLER_H

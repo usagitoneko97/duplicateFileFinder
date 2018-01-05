@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <malloc.h>
+#include "crc.h"
 
 
 int isRegularFile(const char *path)
@@ -62,6 +63,7 @@ FileProperty* getNextFile(FileObj *fileObj)
                 // TODO : member others than name
                 fileReturn->name = de->d_name;
                 fileReturn->size = getSize(temp);
+                fileReturn->crc = getCrcGivenPath(temp);
                 return fileReturn;
             }
             else{
@@ -73,6 +75,45 @@ FileProperty* getNextFile(FileObj *fileObj)
         }
     } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..") || fileReturn == NULL);
     return NULL;
+}
+
+char *readContentOfGivenPath(char *path){
+    FILE *pFile;
+    long lSize;
+    char *buffer;
+    size_t result;
+
+    pFile = fopen(path, "rb");
+    if (pFile == NULL)
+    {
+        return NULL;
+    }
+
+    // obtain file size:
+    fseek(pFile, 0, SEEK_END);
+    lSize = ftell(pFile);
+    rewind(pFile);
+
+    // allocate memory to contain the whole file:
+    buffer = (char *)malloc(sizeof(char) * lSize);
+    if (buffer == NULL)
+    {
+        return NULL;
+    }
+
+    // copy the file into the buffer:
+    result = fread(buffer, 1, lSize, pFile);
+    if (result != lSize)
+    {
+        fputs("Reading error", stderr);
+        exit(3);
+    }
+
+    /* the whole file is now loaded in the memory buffer. */
+
+    // terminate
+    fclose(pFile);
+    return buffer;
 }
 
 FileProperty *getnextFileIgnoreProperty(FileObj *fileObj){
