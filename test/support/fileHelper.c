@@ -30,6 +30,7 @@ FileProperty createTempFile(const char *path, const char *name, int size)
     FileProperty fp;
     fp.name = (char*)name;
     fp.size = size;
+    fp.dateModified = getFileModifiedDate(completePath);
     return fp;
 
 }
@@ -66,6 +67,7 @@ void testAssertJson(json_t *json, FileProperty *fp, int length, int lineNo)
     int i;
     json_t *obj;
     json_t *size;
+    json_t *date;
     char *error;
     for(i = 0; i<length; i++){
         //check the length and the number of object in json
@@ -79,14 +81,39 @@ void testAssertJson(json_t *json, FileProperty *fp, int length, int lineNo)
             error = createMessage("%s doesn't exist in json object!", fp[i].name);
             UNITY_TEST_FAIL(lineNo, error);
         }
-        //get the size
+        //test assert the size of the file
         size = json_object_get(obj, "size");
         if(size == NULL){
             error = createMessage("size parameter is not available in %s in json object", fp[i].name);
             UNITY_TEST_FAIL(lineNo, error);
         }
         if(fp[i].size != json_integer_value(size)){
-            error = createMessage("expected size of object %s to be %d, but was %d", fp[i].name, fp[i].size, json_integer_value(size));
+            error = createMessage("expected size of object %s to be %d, but was %d", 
+                                    fp[i].name, fp[i].size, json_integer_value(size));
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+
+        //test assert the date modified of the file
+        date = json_object_get(obj, "dateModified");
+        if(date == NULL){
+            error = createMessage("dateModified parameter is not available in %s in json object", fp[i].name);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+
+        Date realDate;
+        realDate.year = json_integer_value(json_object_get(date, "year"));
+        realDate.month = json_integer_value(json_object_get(date, "month"));
+        realDate.day = json_integer_value(json_object_get(date, "day"));
+        realDate.hour = json_integer_value(json_object_get(date, "hour"));
+        realDate.minute = json_integer_value(json_object_get(date, "minute"));
+
+        if (realDate.year != fp->dateModified.year ||
+            realDate.month != fp->dateModified.month ||
+            realDate.day != fp->dateModified.day ||
+            realDate.hour != fp->dateModified.hour ||
+            realDate.minute != fp->dateModified.minute)
+        {
+            error = createMessage("expected dateModifed of object %s is not matched!", fp[i].name);
             UNITY_TEST_FAIL(lineNo, error);
         }
         json_object_clear(obj);

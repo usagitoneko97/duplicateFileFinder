@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <malloc.h>
 #include "crc.h"
+#include <time.h>
 
 
 int isRegularFile(const char *path)
@@ -64,6 +65,7 @@ FileProperty* getNextFile(FileObj *fileObj)
                 fileReturn->name = de->d_name;
                 fileReturn->size = getSize(temp);
                 fileReturn->crc = getCrcGivenPath(temp);
+                fileReturn->dateModified = getFileModifiedDate(temp);
                 return fileReturn;
             }
             else{
@@ -75,6 +77,20 @@ FileProperty* getNextFile(FileObj *fileObj)
         }
     } while (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..") || fileReturn == NULL);
     return NULL;
+}
+
+Date getFileModifiedDate(char *path){
+    struct tm *foo;
+    struct stat attrib;
+    stat(path, &attrib);
+    foo = localtime(&attrib.st_mtime);
+    Date date;
+    date.year = foo->tm_year + 1900;
+    date.month = foo->tm_mon + 1;
+    date.day = foo->tm_mday;
+    date.hour = foo->tm_hour;
+    date.minute = foo->tm_min;
+    return date;
 }
 
 char *readContentOfGivenPath(char *path){

@@ -96,13 +96,22 @@ void updateJson(char *path)
 void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson)
 {
     json_t *filePropertiesJson;
-
+    json_t *timeJson;
     filePropertiesJson = json_object();
     json_object_set_new(filePropertiesJson, "size",
                         json_integer(fp->size));
 
     json_object_set_new(filePropertiesJson, "crc",
                         json_integer(fp->crc));
+
+    timeJson = json_pack("{sisisisisi}",
+                         "year", fp->dateModified.year,
+                         "month", fp->dateModified.month,
+                         "day", fp->dateModified.day,
+                         "hour", fp->dateModified.hour,
+                         "minute", fp->dateModified.minute);
+
+    json_object_set_new(filePropertiesJson, "dateModified", timeJson);
 
     json_object_set_new(fileParentJson, fp->name, filePropertiesJson);
 }

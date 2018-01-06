@@ -15,5 +15,6 @@ void removeTempFile(const char *pathName);
 void testAssertJson(json_t *json, FileProperty *fp, int length, int lineNo);
 void testAssertJsonPath(char *path, FileProperty *fp, int length, int lineNo);
 void createJsonFileFromFp(char *path, FileProperty *fp, int length);
+void printDate(Date date);
 
 #endif // _FILEHELPER_H

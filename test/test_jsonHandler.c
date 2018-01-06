@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
 #include <stdint.h>
 #include <string.h>
 #include <malloc.h>
@@ -299,3 +300,4 @@ void test_updateCreateAllJsonOnFolder_given_files_updateJson_on_subFolder(void){
     //test on dummyFolder
     TEST_ASSERT_JSON_PROPERTY_PATH(dummyFolderPath, dummyFp, 2);
 }
+
