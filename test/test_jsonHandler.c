@@ -89,6 +89,28 @@ void test_updateJson_on_emptyFolder_expect_propertyJson_empty(void){
 }
 
 /** 
+ *  TempFolder
+ *  |stella.txt|
+ * 
+ *  propertyJson :
+ *      stella.txt{
+ *          ...
+ *      }
+ * 
+ * expect: no change
+ */
+void test_updateJson_given_file_and_jsonData_is_same_expect_nochange(void){
+    FileProperty fp = createTempFile(TEST_ENV, "stella.txt", 1000);
+
+    FileProperty stella = {.name = "stella,txt", .size = 1000};
+    createJsonFileFromFp(TEST_ENV, &stella, 1);
+
+    updateJson(TEST_ENV);
+
+    TEST_ASSERT_JSON_PROPERTY_PATH(TEST_ENV, &fp, 1);
+}
+
+/** 
  *     tempFolder      
  *    |stella.txt    |
  *    |.property.json|   
