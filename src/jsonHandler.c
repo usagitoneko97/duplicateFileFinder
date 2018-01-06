@@ -22,6 +22,32 @@ void createJson(char *workingDir)
 }
 
 /** 
+ * @brief  compare the date structure
+ * @param  date1: first date
+ *         json: second date contain in json object
+ * @retval 1: if two of the date compared is equal
+ *         0: if the date is not equal
+ */
+int compareDate(Date date1, json_t *json){
+    Date realDate;
+    realDate.year = json_integer_value(json_object_get(json, "year"));
+    realDate.month = json_integer_value(json_object_get(json, "month"));
+    realDate.day = json_integer_value(json_object_get(json, "day"));
+    realDate.hour = json_integer_value(json_object_get(json, "hour"));
+    realDate.minute = json_integer_value(json_object_get(json, "minute"));
+
+    if (date1.year != realDate.year ||
+        date1.month != realDate.month ||
+        date1.day != realDate.day ||
+        date1.hour != realDate.hour ||
+        date1.minute != realDate.minute)
+    {
+       return 0;
+    }
+    return 1;
+}
+
+/** 
  * @brief  only called this func when .property.json exist
  *         compare getNextFile with .property.json
  * @note   
@@ -38,26 +64,29 @@ void updateJson(char *path)
     sprintf(buffer, "%s/%s", path, JSON_FILE_NAME);
     json = json_object_from_file(buffer);
 
+    json_t *jsonFile;
     //get next file
     //check from .property.json
     //if no then add into it
 
-    file = getnextFileIgnoreProperty(&fileObj);
 
     //insert file into .property.json
-    while (file != NULL)
+    while ((file = getnextFileIgnoreProperty(&fileObj)) != NULL)
     {
-        if (json_object_get(json, file->name) == NULL)
-        {
-            //its not inside
-            if (json == NULL)
-            {
-                //property.json is empty
-                json = json_object();
+        if ((jsonFile = json_object_get(json, file->name)) != NULL){
+            json_t *jsonDate = json_object_get(jsonFile, "dateModified");
+            if (compareDate(file->dateModified, jsonDate) == 1){
+                // file obtained and data inside propertyJson are equal
+                continue;
             }
-            createJsonObjectFromFileProp(file, json);
         }
-        file = getnextFileIgnoreProperty(&fileObj);
+        //update the json object with newly obtained file property
+        if (json == NULL)
+        {
+            //property.json is empty
+            json = json_object();
+        }
+        createJsonObjectFromFileProp(file, json);
     }
 
     //check for object in .property.json exist in file

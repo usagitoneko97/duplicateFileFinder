@@ -181,11 +181,7 @@ void test_updateJson_given_propertyJson_stellaTxt_Folder_empty_expect_propertyJs
  *              
  */
 void test_updateJson_given_propertyJson_stellaTxt_Folder_jangTxt_expect_propertyJson_remove_stellaTxt_add_jangTxt(void)
-{
-    json_t *filePropertiesJson;
-    json_t *fileParent;
-
-    
+{   
     FileProperty fp = {.name="stella.txt", .size=500};
 
     createJsonFileFromFp(TEST_ENV, &fp, 1);
@@ -196,6 +192,34 @@ void test_updateJson_given_propertyJson_stellaTxt_Folder_jangTxt_expect_property
     updateJson((char *)TEST_ENV);
 
     TEST_ASSERT_JSON_PROPERTY_PATH(TEST_ENV, &jangFp, 1);
+}
+
+/** 
+ *    tempFolder
+ *   |stella.txt| -- DateModified : 6/1/2018
+ *                -- size : 500
+ * 
+ * given: propertyJson :
+ *            stella.txt{
+ *                  ...
+ *                  DateModified : 5/1/2018
+ *                  size: 300
+ *            }
+ */
+void test_updateJson_given_propertyJson_date_not_same_expect_updated(void){
+
+    //create .property.json with parameter specified below
+    Date dateModifiedPropertyJson = {.year=2018, .month=1, .day=5, .hour=20, .minute=30};
+    FileProperty fp = {.name = "stella.txt", .size = 300, .dateModified = dateModifiedPropertyJson};
+    createJsonFileFromFp(TEST_ENV, &fp, 1);
+
+    Date dateModifiedActualFile = {.year = 2018, .month = 1, .day = 6, .hour = 20, .minute = 30};
+    FileProperty actualFileProp = createTempFileWithDate(TEST_ENV, "stella.txt", 500, dateModifiedActualFile);
+
+    updateJson(TEST_ENV);
+
+    //test json file in TEST_ENV is the same with the actualFileProp created 
+    TEST_ASSERT_JSON_PROPERTY_PATH(TEST_ENV, &actualFileProp, 1);
 }
 
 //-----------------updateCreateAllJsonOnFolder-----------------\\ 
@@ -300,4 +324,3 @@ void test_updateCreateAllJsonOnFolder_given_files_updateJson_on_subFolder(void){
     //test on dummyFolder
     TEST_ASSERT_JSON_PROPERTY_PATH(dummyFolderPath, dummyFp, 2);
 }
-

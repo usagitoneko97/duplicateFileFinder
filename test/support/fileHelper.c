@@ -4,7 +4,9 @@
 #include "fileHelper.h"
 #include "jsonHandler.h"
 #include <stdlib.h>
-
+#include <sys/stat.h>
+#include <utime.h>
+#include <time.h>
 
 FileProperty createTempFile(const char *path, const char *name, int size)
 {
@@ -33,6 +35,34 @@ FileProperty createTempFile(const char *path, const char *name, int size)
     fp.dateModified = getFileModifiedDate(completePath);
     return fp;
 
+}
+
+void setFileModifiedDate(char *path, Date date)
+{
+    struct stat foo;
+    time_t modifiedEpoch;
+    struct utimbuf new_times;
+
+    date.year -=1900;
+    date.month -=1;
+    struct tm modifiedDate = {.tm_year=date.year, .tm_mon=date.month, 
+                            .tm_mday=date.day, .tm_hour=date.hour, .tm_min=date.minute};
+    modifiedEpoch = mktime(&modifiedDate);
+
+    stat(path, &foo);
+    
+    new_times.actime = foo.st_atime; /* keep atime unchanged */
+    new_times.modtime = modifiedEpoch; /* set mtime to current time */
+    utime(path, &new_times);
+}
+
+FileProperty createTempFileWithDate(const char *path, const char *name, int size, Date date){
+    char buffer[256];
+    FileProperty fp = createTempFile(path, name, size);
+    sprintf(buffer, "%s/%s", path, name);
+    setFileModifiedDate((char*)buffer, date);
+    fp.dateModified = date;
+    return fp;
 }
 
 void removeTempFile(const char *pathName)
@@ -153,3 +183,17 @@ void createJsonFileFromFp(char *path, FileProperty *fp, int length)
 
     json_object_clear(propertyJson);
 }
+
+void testAssertEqualDate(Date date1, Date date2, int lineNo){
+    char *error;
+    if( date1.year != date2.year    || 
+        date1.month != date2.month  || 
+        date1.day != date2.day      ||
+        date1.hour != date2.hour    ||
+        date1.minute != date2.minute)
+    {
+        error = createMessage("expected date is not equal to actual date!");
+        UNITY_TEST_FAIL(lineNo, error);
+    }
+}
+
