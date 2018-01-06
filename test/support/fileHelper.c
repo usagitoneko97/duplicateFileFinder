@@ -3,20 +3,27 @@
 #include "unity.h"
 #include "fileHelper.h"
 #include "jsonHandler.h"
+#include <stdlib.h>
 
 
 FileProperty createTempFile(const char *path, const char *name, int size)
 {
     char completePath[256];
+    int randNum;
     strcpy(completePath, path);
     strcat(completePath, "/");
     strcat(completePath, name);
 
     FILE *filePtr = fopen(completePath, "w");
     //generate file of this size
-    fseek(filePtr, size - 1, SEEK_SET);
-    if(size != 0)
+    if(size != 0){
+        fseek(filePtr, 0, SEEK_SET);
+        randNum = rand();
+        randNum = randNum % 127;
+        fputc((char)(randNum), filePtr);
+        fseek(filePtr, size - 1, SEEK_SET);
         fputc('\0', filePtr);
+    }
 
     fclose(filePtr);
 

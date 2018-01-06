@@ -90,9 +90,7 @@ char *readContentOfGivenPath(char *path){
     }
 
     // obtain file size:
-    fseek(pFile, 0, SEEK_END);
-    lSize = ftell(pFile);
-    rewind(pFile);
+    lSize = getSize(path);
 
     // allocate memory to contain the whole file:
     buffer = (char *)malloc(sizeof(char) * lSize);

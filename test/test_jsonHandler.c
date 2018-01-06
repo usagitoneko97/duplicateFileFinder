@@ -299,8 +299,3 @@ void test_updateCreateAllJsonOnFolder_given_files_updateJson_on_subFolder(void){
     //test on dummyFolder
     TEST_ASSERT_JSON_PROPERTY_PATH(dummyFolderPath, dummyFp, 2);
 }
-
-void test_crc(){
-    const char *s = "a";
-    printf("crc = %x", rc_crc32(0, s, strlen(s)));
-}
