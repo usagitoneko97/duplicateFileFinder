@@ -1,5 +1,5 @@
-#ifndef _JSON2AVL_H
-#define _JSON2AVL_H
+#ifndef _json2AvlOnFolder_H
+#define _json2AvlOnFolder_H
 
 #include "fileHandler.h"
 
@@ -13,8 +13,8 @@ struct JsonNode
     FileProperty *data;
 };
 
-void json2Avl(JsonNode **root, char *path);
+void json2AvlOnFolder(JsonNode **root, char *path);
 JsonNode *createNodeWithJson(json_t *json, char *name);
 int avlCompareFp(void *data1, Node *data2);
 
-#endif // _JSON2AVL_H
+#endif // _json2AvlOnFolder_H

@@ -39,11 +39,11 @@ void tearDown(void)
     removeDir(TEST_ENV);
 }
 
-void test_json2Avl_given_propertyJson_empty_expect_emptyAvl(void){
+void test_json2AvlOnFolder_given_propertyJson_empty_expect_emptyAvl(void){
     //create an empty property json file
     createTempFile(TEST_ENV, JSON_FILE_NAME, 0);
     JsonNode *jsonRoot = NULL;
-    json2Avl(&jsonRoot, TEST_ENV);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV);
 
     TEST_ASSERT_NULL(jsonRoot);
 }
@@ -58,13 +58,13 @@ void test_json2Avl_given_propertyJson_empty_expect_emptyAvl(void){
  *                12345
  *              stella.txt
  */
-void test_json2Avl_given_propertyJson_stella_expect_avl_stella(void)
+void test_json2AvlOnFolder_given_propertyJson_stella_expect_avl_stella(void)
 {
     FileProperty propertyJsonFp = {.name = "stella.txt", .size=500, .crc=12345};
     createJsonFileFromFp(TEST_ENV, &propertyJsonFp, 1);
 
     JsonNode *jsonRoot = NULL;
-    json2Avl(&jsonRoot, TEST_ENV);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_EQUAL_STRING("stella.txt", jsonRoot->data->name);
@@ -91,7 +91,7 @@ void test_json2Avl_given_propertyJson_stella_expect_avl_stella(void)
  *        /  \
  *       5   15
  */
-void test_json2Avl_given_propertyJson_3_object_expect_balanced_avl(void)
+void test_json2AvlOnFolder_given_propertyJson_3_object_expect_balanced_avl(void)
 {
     FileProperty propertyJsonFp[] = {{.name = "stella.txt", .size = 500, .crc = 5},
                                     {.name = "jang.txt", .size = 500, .crc = 10},
@@ -99,7 +99,7 @@ void test_json2Avl_given_propertyJson_3_object_expect_balanced_avl(void)
     createJsonFileFromFp(TEST_ENV, propertyJsonFp, 3);
 
     JsonNode *jsonRoot = NULL;
-    json2Avl(&jsonRoot, TEST_ENV);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_EQUAL_STRING("jang.txt", jsonRoot->data->name);
@@ -127,7 +127,7 @@ void test_json2Avl_given_propertyJson_3_object_expect_balanced_avl(void)
  * 
  *  exception thrown at fox.txt
  */
-void test_json2Avl_given_propertyJson_3_obj_2_same_crc_expect_throw_exception(void){
+void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_throw_exception(void){
     FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5},
                                      {.name = "brown.txt", .size = 500, .crc = 10},
                                      {.name = "fox.txt", .size = 500, .crc = 5}};
@@ -135,13 +135,13 @@ void test_json2Avl_given_propertyJson_3_obj_2_same_crc_expect_throw_exception(vo
 
     JsonNode *jsonRoot = NULL;
     Try{
-    json2Avl(&jsonRoot, TEST_ENV);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV);
         TEST_FAIL_MESSAGE("expect exception to be thrown when the crc of the 2 object is same, but none");
     }Catch(ex){}
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_NULL(jsonRoot->left);
-    // TEST_ASSERT_EQUAL_STRING("jang.txt", jsonRoot->data->name);
-    // TEST_ASSERT_EQUAL_STRING("stella.txt", jsonRoot->left->data->name);
-    // TEST_ASSERT_EQUAL_STRING("akai.txt", jsonRoot->right->data->name);
+    TEST_ASSERT_NOT_NULL(jsonRoot->right);
+    TEST_ASSERT_EQUAL_STRING("quick.txt", jsonRoot->data->name);
+    TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 }

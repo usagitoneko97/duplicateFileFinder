@@ -1,11 +1,14 @@
 #include "json2Avl.h"
 #include "AddAvl.h"
 #include <malloc.h>
+#include "Exception.h"
+#include "CException.h"
 
+CEXCEPTION_T ex;
 #define avlAddJsonFp(jsonRootNode, nodeToAdd, avlCompareFp) \
             _avlAdd((Node **)jsonRootNode, (Node *)nodeToAdd, avlCompareFp)
 
-void json2Avl(JsonNode **root, char *path)
+void json2AvlOnFolder(JsonNode **root, char *path)
 {
     //read json data from .propertyJson just on this path (no recursive)
     char propertJsonPath[256];
@@ -19,7 +22,12 @@ void json2Avl(JsonNode **root, char *path)
         JsonNode *jsonNode = createNodeWithJson(value, (char*)key);
         // FIXME jsonNode should be free somewhere
         //add to avl
-        avlAddJsonFp(root, jsonNode, avlCompareFp);
+        Try{
+            avlAddJsonFp(root, jsonNode, avlCompareFp);
+        }Catch(ex){
+            //file already exists
+            Throw(ex);
+        }
     }
 }
 
