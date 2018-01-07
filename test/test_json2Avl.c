@@ -38,6 +38,15 @@ void tearDown(void)
     removeDir(TEST_ENV);
 }
 
+void test_json2Avl_given_propertyJson_empty_expect_emptyAvl(void){
+    //create an empty property json file
+    createTempFile(TEST_ENV, JSON_FILE_NAME, 0);
+    JsonNode *jsonRoot = NULL;
+    json2Avl(&jsonRoot, TEST_ENV);
+
+    TEST_ASSERT_NULL(jsonRoot);
+}
+
 /** 
  *    propertyJson : 
  *          stella.txt{
