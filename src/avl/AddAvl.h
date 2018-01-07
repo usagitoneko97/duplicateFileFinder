@@ -1,11 +1,14 @@
-#ifndef _ADDAVL_H
-#define _ADDAVL_H
+#ifndef _avlAdd_H
+#define _avlAdd_H
+
 #include "Node.h"
 
-
-int addAvl(Node **root, Node *nodeToAdd);
+int _avlAdd(Node **root, Node *nodeToAdd, CompareWithVoidPtr compare);
+void avlAdd(Node **root, Node *NodeToAdd, CompareWithVoidPtr compare);
 int avlBalanceLeftTree(Node **rootPtr);
 int avlBalanceRightTree(Node **rootPtr);
 
 
-#endif // _ADDAVL_H
+
+
+#endif // _avlAdd_H

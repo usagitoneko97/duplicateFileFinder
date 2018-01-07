@@ -20,7 +20,8 @@ char *createMessage(char *message, ...){
   return buffer;
 }
 
-void testAssertEqualNode(Node *node, Node *left, Node *right, int bf ,int lineNo){
+void testAssertEqualNode(Node *node, Node *left, Node *right, int balanceFactor, int lineNo)
+{
   char *error;
   if(left != NULL){
     if(node->left != left){
@@ -50,9 +51,9 @@ void testAssertEqualNode(Node *node, Node *left, Node *right, int bf ,int lineNo
       UNITY_TEST_FAIL(lineNo,error);
     }
   }
-  if(bf != node->bf){
+  if(balanceFactor != node->balanceFactor){
     error = createMessage("Expected balance factor to be %d, but was %d",  \
-                            bf, node->bf);
+                            balanceFactor, node->balanceFactor);
     UNITY_TEST_FAIL(lineNo,error);
   }
 

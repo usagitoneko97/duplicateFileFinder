@@ -1,5 +1,5 @@
 #include "rotate.h"
-
+#include <stddef.h>
 /**
  *       25                      35
  *        \                     /  \
@@ -7,7 +7,7 @@
  *       / \                    \
  *      30  40                   30
  */
-/** 
+/**
  * @brief  rotate left of the avl tree
  * @param  *node: avl tree
  * @retval return the new root after rotation
@@ -33,7 +33,7 @@ Node *rotateLeft(Node *node){
  *   / \             /
  *  5  20          20
  */
-/** 
+/**
  * @brief  rotate right of the avl tree
  * @param  *node: avl tree
  * @retval return the new root after rotation
@@ -79,7 +79,7 @@ Node *rotateRightLeft(Node *node){
   return root;
 }
 
-int calcBF(Node *root){
+int calcbalanceFactor(Node *root){
   int leftHeight, rightHeight;
   if(root->left == NULL)
     leftHeight = -1;
@@ -123,7 +123,7 @@ int nodeHeight(Node *root){
  *  -----------------------------------------------------------------
  */
 
- /** 
+ /**
   * @brief  balance right side of the tree pointed by rootptr
   * @param  **rootPtr: pointer to the avl tree
   * @retval height change status after avl rotation(if any)
@@ -131,32 +131,32 @@ int nodeHeight(Node *root){
 int avlBalanceRightTree(Node **rootPtr)
 {
 
-  if ((*rootPtr)->bf <= 1)
+  if ((*rootPtr)->balanceFactor <= 1)
     return CHANGED;
 
   //need to balance here as balance factor = 2
-  if ((*rootPtr)->right->bf < 0)
+  if ((*rootPtr)->right->balanceFactor < 0)
   {
     //rotate right left
     (*rootPtr) = rotateRightLeft(*rootPtr);
-    switch ((*rootPtr)->bf)
+    switch ((*rootPtr)->balanceFactor)
     {
     case -1:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = 0;
-      (*rootPtr)->right->bf = 1;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = 0;
+      (*rootPtr)->right->balanceFactor = 1;
       return CHANGED;
       break;
     case 0:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = 0;
-      (*rootPtr)->right->bf = 0;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = 0;
+      (*rootPtr)->right->balanceFactor = 0;
       return CHANGED;
       break;
     case 1:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = -1;
-      (*rootPtr)->right->bf = 0;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = -1;
+      (*rootPtr)->right->balanceFactor = 0;
       return CHANGED;
       break;
     }
@@ -165,53 +165,53 @@ int avlBalanceRightTree(Node **rootPtr)
   {
     //rotate left
     (*rootPtr) = rotateLeft(*rootPtr);
-    switch ((*rootPtr)->bf)
+    switch ((*rootPtr)->balanceFactor)
     {
     case 1:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = 0;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = 0;
       return CHANGED;
       break;
     case 0:
-      (*rootPtr)->bf = -1;
-      (*rootPtr)->left->bf = 1;
+      (*rootPtr)->balanceFactor = -1;
+      (*rootPtr)->left->balanceFactor = 1;
       return NO_CHANGED;
       break;
     }
   }
 }
 
-/** 
+/**
   * @brief  balance left side of the tree pointed by rootptr
   * @param  **rootPtr: pointer to the avl tree
   * @retval height change status after avl rotation(if any)
   */
 int avlBalanceLeftTree(Node **rootPtr)
 {
-  if ((*rootPtr)->bf >= -1)
+  if ((*rootPtr)->balanceFactor >= -1)
     return CHANGED;
-  if ((*rootPtr)->left->bf > 0)
+  if ((*rootPtr)->left->balanceFactor > 0)
   {
     //rotate left right
     (*rootPtr) = rotateleftRight(*rootPtr);
-    switch ((*rootPtr)->bf)
+    switch ((*rootPtr)->balanceFactor)
     {
     case 1:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = -1;
-      (*rootPtr)->right->bf = 0;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = -1;
+      (*rootPtr)->right->balanceFactor = 0;
       return CHANGED;
       break;
     case 0:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = 0;
-      (*rootPtr)->right->bf = 0;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = 0;
+      (*rootPtr)->right->balanceFactor = 0;
       return CHANGED;
       break;
     case -1:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->left->bf = 0;
-      (*rootPtr)->right->bf = 1;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->left->balanceFactor = 0;
+      (*rootPtr)->right->balanceFactor = 1;
       return CHANGED;
       break;
     }
@@ -220,16 +220,16 @@ int avlBalanceLeftTree(Node **rootPtr)
   {
     //rotate right
     (*rootPtr) = rotateRight(*rootPtr);
-    switch ((*rootPtr)->bf)
+    switch ((*rootPtr)->balanceFactor)
     {
     case -1:
-      (*rootPtr)->bf = 0;
-      (*rootPtr)->right->bf = 0;
+      (*rootPtr)->balanceFactor = 0;
+      (*rootPtr)->right->balanceFactor = 0;
 	  return CHANGED;
       break;
     case 0:
-      (*rootPtr)->bf = 1;
-      (*rootPtr)->right->bf = -1;
+      (*rootPtr)->balanceFactor = 1;
+      (*rootPtr)->right->balanceFactor = -1;
       return NO_CHANGED;
       break;
     }

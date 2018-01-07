@@ -6,7 +6,7 @@ Node *rotateLeft(Node *root);
 Node *rotateRight(Node *root);
 Node *rotateleftRight(Node *node);
 Node *rotateRightLeft(Node *node);
-int calcBF(Node *root);
+int calcbalanceFactor(Node *root);
 int nodeHeight(Node *root);
 int avlBalanceLeftTree(Node **rootPtr);
 int avlBalanceRightTree(Node **rootPtr);
