@@ -50,7 +50,7 @@ void testavlAddInteger_given_node1_add_node5(void){
   IntegerNode *root = &node1;
   Node *rootNode = (Node *)root;
   Try{
-    avlAddInteger(&rootNode, &node5);
+    avlAddInteger(&root, &node5);
   }Catch(ex){
     dumpException(ex);
   }

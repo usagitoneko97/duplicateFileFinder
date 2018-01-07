@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <utime.h>
 #include <time.h>
+#include "NodeVerifier.h"
 
 FileProperty createTempFile(const char *path, const char *name, int size)
 {
@@ -68,21 +69,6 @@ FileProperty createTempFileWithDate(const char *path, const char *name, int size
 void removeTempFile(const char *pathName)
 {
     remove(pathName);
-}
-
-char *createMessage(char *message, ...)
-{
-    va_list args;
-    char *buffer;
-    int length;
-
-    va_start(args, message);
-
-    length = vsnprintf(buffer, 0, message, args);
-    buffer = malloc(length + 1);
-    vsnprintf(buffer, length + 1, message, args);
-
-    return buffer;
 }
 
 /** 

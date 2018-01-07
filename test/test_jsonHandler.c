@@ -15,6 +15,7 @@
 #include "fileHandler.h"
 #include "_jansson.h"
 #include "crc.h"
+#include "NodeVerifier.h"
 
 void setUp(void)
 {

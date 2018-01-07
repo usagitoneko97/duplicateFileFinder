@@ -14,6 +14,7 @@
 #include "jsonHandler.h"
 #include "_jansson.h"
 #include "crc.h"
+#include "NodeVerifier.h"
 
 void setUp(void){
     mkdir(TEST_ENV);

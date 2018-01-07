@@ -10,4 +10,5 @@
 
 void testAssertEqualNode(Node *node, Node *left, Node *right, int balanceFactor, int lineNo);
 
+char *createMessage(char *message, ...);
 #endif // _NODEVERIFIER_H
