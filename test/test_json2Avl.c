@@ -28,6 +28,7 @@
 #include "AvlString.h"
 #include "DeleteAvl.h"
 
+CEXCEPTION_T ex;
 void setUp(void)
 {
     mkdir(TEST_ENV);
@@ -104,4 +105,43 @@ void test_json2Avl_given_propertyJson_3_object_expect_balanced_avl(void)
     TEST_ASSERT_EQUAL_STRING("jang.txt", jsonRoot->data->name);
     TEST_ASSERT_EQUAL_STRING("stella.txt", jsonRoot->left->data->name);
     TEST_ASSERT_EQUAL_STRING("akai.txt", jsonRoot->right->data->name);
+}
+
+/**
+ *     propertyJson:
+ *          quick.txt{
+ *              crc=5
+ *              ...
+ *          }
+ *          brown.txt{
+ *              crc=10
+ *          }
+ *          fox.txt{
+ *              crc=5
+ *          }
+ * 
+ *   expect avl:
+ *          5
+ *           \
+ *           10
+ * 
+ *  exception thrown at fox.txt
+ */
+void test_json2Avl_given_propertyJson_3_obj_2_same_crc_expect_throw_exception(void){
+    FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5},
+                                     {.name = "brown.txt", .size = 500, .crc = 10},
+                                     {.name = "fox.txt", .size = 500, .crc = 5}};
+    createJsonFileFromFp(TEST_ENV, propertyJsonFp, 3);
+
+    JsonNode *jsonRoot = NULL;
+    Try{
+    json2Avl(&jsonRoot, TEST_ENV);
+        TEST_FAIL_MESSAGE("expect exception to be thrown when the crc of the 2 object is same, but none");
+    }Catch(ex){}
+
+    TEST_ASSERT_NOT_NULL(jsonRoot);
+    TEST_ASSERT_NULL(jsonRoot->left);
+    // TEST_ASSERT_EQUAL_STRING("jang.txt", jsonRoot->data->name);
+    // TEST_ASSERT_EQUAL_STRING("stella.txt", jsonRoot->left->data->name);
+    // TEST_ASSERT_EQUAL_STRING("akai.txt", jsonRoot->right->data->name);
 }

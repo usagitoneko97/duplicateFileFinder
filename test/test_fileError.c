@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <dirent.h>
+
+#include <stdarg.h>
 void setUp(void)
 {
     //create working tst folder
