@@ -4,9 +4,48 @@
 #include "Exception.h"
 #include "CException.h"
 #include "AvlSearch.h"
+#include "FileHandler.h"
 
 CEXCEPTION_T ex;
 
+/** 
+ * @brief  convert all propertyJson and put it inside avl including sub folder
+ * @param  **root: root for avl
+ * @param  *path: path of the folder to check
+ * @param  *duplicateL: an array of linked list of duplicate files
+ * @retval None
+ */
+void json2Avl(JsonNode **root, char *path, DuplicationList *duplicateL)
+{
+    //get propertyJson on current folder
+    char buffer[256];
+    FolderContent *folder;
+    json2AvlOnFolder(root, path, duplicateL);
+    //get propertyJson on sub folder
+    FileObj fileObj;
+    loadFileObjWithPath(path, &fileObj);
+
+    folder = getNextFolder(&fileObj);
+    while (folder != NULL)
+    {
+        sprintf(buffer, "%s/%s", path, folder->name);
+        json2Avl(root, buffer, duplicateL);
+        free(folder);
+        folder = getNextFolder(&fileObj);
+    }
+    fileObj.dr = opendir(path);
+    closedir(fileObj.dr);
+}
+
+/** 
+ * @brief  convert propertyJson and put it inside avl 
+ * @note   only convert propertyJson in the current folder
+ *          (didnt include the sub folder)
+ * @param  **root: root for avl
+ * @param  *path: path of the folder to check
+ * @param  *duplicateL: an array of linked list of duplicate files
+ * @retval None
+ */
 void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
 {
     //read json data from .propertyJson just on this path (no recursive)

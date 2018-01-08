@@ -20,6 +20,7 @@ struct DuplicationList{
     LinkedList *list;
 };
 
+void json2Avl(JsonNode **root, char *path, DuplicationList *duplicateL);
 void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL);
 JsonNode *createNodeWithJson(json_t *json, char *name);
 int avlCompareFp(void *data1, Node *data2);
