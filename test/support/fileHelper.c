@@ -214,7 +214,7 @@ void testAssertListWithFp(LinkedList *list, FileProperty *fp, int length, int li
         }
         if (fp1->crc != (fp+i)->crc)
         {
-            error = createMessage("expected name to be %s, but was %s", (fp+i)->crc, fp1->crc);
+            error = createMessage("expected name to be %d, but was %d", (fp+i)->crc, fp1->crc);
             UNITY_TEST_FAIL(lineNo, error);
         }
         // if (!compare2Date(fp1->dateModified, fp->dateModified))

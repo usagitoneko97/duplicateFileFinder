@@ -47,6 +47,7 @@ void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
                     // something is wrong
                 }
                 else{
+					ListInit(duplicateL->list + duplicateL->numberOfDuplication);
                     Item *itemOnAvl = createItemWithNode((JsonNode*)nodeSearched);
                     ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
                                       itemOnAvl);
@@ -136,4 +137,16 @@ int avlCompareFpWithCrc(void *data1, Node *data2)
     {
         return 0;
     }
+}
+
+void freeJsonNode(JsonNode *jsonRoot)
+{
+    if (jsonRoot == NULL)
+    {
+        return;
+    }
+    freeJsonNode(jsonRoot->right);
+    freeJsonNode(jsonRoot->left);
+    free(jsonRoot->data);
+    free(jsonRoot);
 }
