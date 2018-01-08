@@ -27,6 +27,8 @@ int avlCompareFpWithCrc(void *data1, Node *data2);
 Item *createItemWithNode(JsonNode *node);
 int searchCrcOnList(LinkedList *list, int numberOfList, int crc);
 void freeJsonNode(JsonNode *jsonRoot);
+void freeDuplicationLinkedList(DuplicationList *dupList);
+void freeItem(Item *item);
 
 #define avlAddJsonFp(jsonRootNode, nodeToAdd, avlCompareFp) \
     _avlAdd((Node **)jsonRootNode, (Node *)nodeToAdd, avlCompareFp)

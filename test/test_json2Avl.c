@@ -163,6 +163,7 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_update_LL(
     TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 
     freeJsonNode(jsonRoot);
+    freeDuplicationLinkedList(&duplicateL);
     // TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 }
 
@@ -220,6 +221,7 @@ void test_json2AvlOnFolder_given_propertyJson_4_obj_3_same_crc_expect_update_LL(
     TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 
     freeJsonNode(jsonRoot);
+    freeDuplicationLinkedList(&duplicateL);
 }
 
 /**
@@ -284,5 +286,5 @@ void test_json2AvlOnFolder_given_propertyJson_4_obj_2_pairs_of_duplicate_expect_
     TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 
     freeJsonNode(jsonRoot);
+    freeDuplicationLinkedList(&duplicateL);
 }
-

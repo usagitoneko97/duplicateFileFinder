@@ -150,3 +150,24 @@ void freeJsonNode(JsonNode *jsonRoot)
     free(jsonRoot->data);
     free(jsonRoot);
 }
+
+void freeDuplicationLinkedList(DuplicationList *dupList)
+{
+    //free item
+    //free linked list
+    int i;
+    for(i = 0; i < dupList->numberOfDuplication; i++){
+        Item *iter = (dupList->list + i)->head;
+		freeItem(iter);
+    }
+	free(dupList->list);
+   
+}
+
+void freeItem(Item *item){
+    if(item == NULL){
+        return;
+    }
+    freeItem(item->next);
+    free(item);
+}
