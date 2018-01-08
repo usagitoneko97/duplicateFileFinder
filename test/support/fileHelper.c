@@ -56,6 +56,18 @@ void createDuplicateFile(const char *path, char *fileName[], int noOfFile){
     }
 }
 
+void createFileGivenString(const char *path, char *fileName, char *stringMessage){
+    char completePathFile[256];
+    sprintf(completePathFile, "%s/%s", path, fileName);
+
+    FILE *filePtr = fopen(completePathFile, "w");
+    fseek(filePtr, 0, SEEK_SET);
+    fputs(stringMessage, filePtr);
+    fseek(filePtr, DUPLICATE_FILE_SIZE - 1, SEEK_SET);
+    fputc('\0', filePtr);
+    fclose(filePtr);
+}
+
 
 void setFileModifiedDate(char *path, Date date)
 {

@@ -16,5 +16,7 @@ DuplicationList findDuplicate(char *path)
 	duplicateL.numberOfDuplication = 0;
     json2Avl(&root, path, &duplicateL);
 
+    //delete the whole avl tree
+    freeJsonNode(root);
     return duplicateL;
 }

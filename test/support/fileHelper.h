@@ -17,6 +17,7 @@
 #define TEST_ASSERT_LIST_FP_NAME(list, name, numOfFile)     testAssertListWithFpOnlyName(list, name, numOfFile, __LINE__)
 
 FileProperty createTempFile(const char *path, const char *name, int size);
+void createFileGivenString(const char *path, char *fileName, char *stringMessage);
 FileProperty createTempFileWithDate(const char *path, const char *name, int size, Date date);
 void createDuplicateFile(const char *path, char *fileName[], int noOfFile);
 
