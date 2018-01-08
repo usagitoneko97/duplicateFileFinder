@@ -5,10 +5,8 @@
 #include "CException.h"
 
 CEXCEPTION_T ex;
-#define avlAddJsonFp(jsonRootNode, nodeToAdd, avlCompareFp) \
-            _avlAdd((Node **)jsonRootNode, (Node *)nodeToAdd, avlCompareFp)
 
-void json2AvlOnFolder(JsonNode **root, char *path)
+void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
 {
     //read json data from .propertyJson just on this path (no recursive)
     char propertJsonPath[256];
@@ -25,10 +23,31 @@ void json2AvlOnFolder(JsonNode **root, char *path)
         Try{
             avlAddJsonFp(root, jsonNode, avlCompareFp);
         }Catch(ex){
+            if(duplicateL->numberOfDuplication == 0){
+                //first insert
+                duplicateL->list = (LinkedList*)malloc(sizeof(LinkedList));
+
+            }
+            else{
+                duplicateL->list = (LinkedList *)realloc(duplicateL->list,  \
+                                                    sizeof(LinkedList) * (duplicateL->numberOfDuplication + 1));
+            }
             //file already exists
+            Item *item = createItemWithNode(jsonNode);
+            // FIXME item should be free somewhere
+            ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication], \
+                              item);
+            //add inside duplicateL
             Throw(ex);
         }
     }
+}
+
+Item *createItemWithNode(JsonNode *node){
+    Item *item = (Item*)malloc(sizeof(Item));
+    (item->data) = (void*)node->data;
+    item->next = NULL;
+    return item;
 }
 
 /** 

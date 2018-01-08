@@ -28,6 +28,7 @@
 #include "AvlString.h"
 #include "DeleteAvl.h"
 
+#include "linkedlist.h"
 CEXCEPTION_T ex;
 void setUp(void)
 {
@@ -41,9 +42,11 @@ void tearDown(void)
 
 void test_json2AvlOnFolder_given_propertyJson_empty_expect_emptyAvl(void){
     //create an empty property json file
+
     createTempFile(TEST_ENV, JSON_FILE_NAME, 0);
     JsonNode *jsonRoot = NULL;
-    json2AvlOnFolder(&jsonRoot, TEST_ENV);
+    DuplicationList duplicateL;
+    json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
 
     TEST_ASSERT_NULL(jsonRoot);
 }
@@ -63,12 +66,14 @@ void test_json2AvlOnFolder_given_propertyJson_stella_expect_avl_stella(void)
     FileProperty propertyJsonFp = {.name = "stella.txt", .size=500, .crc=12345};
     createJsonFileFromFp(TEST_ENV, &propertyJsonFp, 1);
 
+    DuplicationList duplicateL;
     JsonNode *jsonRoot = NULL;
-    json2AvlOnFolder(&jsonRoot, TEST_ENV);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_EQUAL_STRING("stella.txt", jsonRoot->data->name);
     TEST_ASSERT_EQUAL_NODE(jsonRoot, NULL, NULL, 0);
+    free(jsonRoot);
 }
 
 /**
@@ -97,14 +102,19 @@ void test_json2AvlOnFolder_given_propertyJson_3_object_expect_balanced_avl(void)
                                     {.name = "jang.txt", .size = 500, .crc = 10},
                                     {.name = "akai.txt", .size = 500, .crc = 15}};
     createJsonFileFromFp(TEST_ENV, propertyJsonFp, 3);
-
+    DuplicationList duplicateL;
     JsonNode *jsonRoot = NULL;
-    json2AvlOnFolder(&jsonRoot, TEST_ENV);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_EQUAL_STRING("jang.txt", jsonRoot->data->name);
     TEST_ASSERT_EQUAL_STRING("stella.txt", jsonRoot->left->data->name);
     TEST_ASSERT_EQUAL_STRING("akai.txt", jsonRoot->right->data->name);
+    free(jsonRoot->right->data);
+    free(jsonRoot->right);
+    free(jsonRoot->left->data);
+    free(jsonRoot->left);
+    free(jsonRoot);
 }
 
 /**
@@ -126,6 +136,10 @@ void test_json2AvlOnFolder_given_propertyJson_3_object_expect_balanced_avl(void)
  *           10
  * 
  *  exception thrown at fox.txt
+ * 
+ *  expect linkedlist[0] : quick.txt - fox.txt - NULL
+ *                           |            |
+ *                          head          tail
  */
 void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_throw_exception(void){
     FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5},
@@ -134,14 +148,29 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_throw_exce
     createJsonFileFromFp(TEST_ENV, propertyJsonFp, 3);
 
     JsonNode *jsonRoot = NULL;
+    DuplicationList duplicateL;
+    duplicateL.numberOfDuplication = 0;
     Try{
-    json2AvlOnFolder(&jsonRoot, TEST_ENV);
+        json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
         TEST_FAIL_MESSAGE("expect exception to be thrown when the crc of the 2 object is same, but none");
     }Catch(ex){}
+
+    TEST_ASSERT_NOT_NULL(duplicateL.list);
+    TEST_ASSERT_EQUAL_STRING("fox.txt", ((FileProperty*)(duplicateL.list->head->data))->name);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_NULL(jsonRoot->left);
     TEST_ASSERT_NOT_NULL(jsonRoot->right);
     TEST_ASSERT_EQUAL_STRING("quick.txt", jsonRoot->data->name);
     TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
+
+    free(jsonRoot->right->data);
+    free(jsonRoot->right);
+    free(jsonRoot);
+    // TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 }
+
+/**
+ *      
+ * 
+ */ 

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <dirent.h>
+#include <malloc.h>
 
 #include <stdarg.h>
 void setUp(void)
