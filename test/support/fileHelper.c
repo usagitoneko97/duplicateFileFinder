@@ -38,6 +38,25 @@ FileProperty createTempFile(const char *path, const char *name, int size)
 
 }
 
+
+void createDuplicateFile(const char *path, char *fileName[], int noOfFile){
+    int randNum;
+    //limit to ascii code
+    randNum = rand() % 127;
+    char completePathFile[256];
+    int i;
+    for(i = 0; i < noOfFile; i++){
+        sprintf(completePathFile, "%s/%s", path, *(fileName+i));
+        FILE *filePtr = fopen(completePathFile, "w");
+        fseek(filePtr, 0, SEEK_SET);
+        fputc((char)(randNum), filePtr);
+        fseek(filePtr, DUPLICATE_FILE_SIZE - 1, SEEK_SET);
+        fputc('\0', filePtr);
+        fclose(filePtr);
+    }
+}
+
+
 void setFileModifiedDate(char *path, Date date)
 {
     struct stat foo;
@@ -222,6 +241,28 @@ void testAssertListWithFp(LinkedList *list, FileProperty *fp, int length, int li
         //     error = createMessage("expected date of %s is not the same with date of %s", fp->name, fp1->name);
         //     UNITY_TEST_FAIL(lineNo, error);
         // }
+        iter = iter->next;
+    }
+}
+
+void testAssertListWithFpOnlyName(LinkedList *list, char*name[], int numOfFile, int lineNo){
+    FileProperty *fp1;
+    char *error;
+    int i;
+    Item *iter = list->head;
+    for (i = 0; i < numOfFile; i++)
+    {
+        fp1 = (FileProperty *)(iter->data);
+        if (iter == NULL)
+        {
+            error = createMessage("list does not contain %d amount of data", numOfFile);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+        if (strcmp(fp1->name, name[i]))
+        {
+            error = createMessage("expected name to be %s, but was %s", name[i], fp1->name);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
         iter = iter->next;
     }
 }
