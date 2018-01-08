@@ -27,6 +27,7 @@
 #include "AvlInteger.h"
 #include "AvlString.h"
 #include "DeleteAvl.h"
+#include "AvlSearch.h"
 
 #include "linkedlist.h"
 CEXCEPTION_T ex;
@@ -135,13 +136,12 @@ void test_json2AvlOnFolder_given_propertyJson_3_object_expect_balanced_avl(void)
  *           \
  *           10
  * 
- *  exception thrown at fox.txt
  * 
  *  expect linkedlist[0] : quick.txt - fox.txt - NULL
  *                           |            |
  *                          head          tail
  */
-void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_throw_exception(void){
+void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_update_LL(void){
     FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5},
                                      {.name = "brown.txt", .size = 500, .crc = 10},
                                      {.name = "fox.txt", .size = 500, .crc = 5}};
@@ -150,13 +150,74 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_throw_exce
     JsonNode *jsonRoot = NULL;
     DuplicationList duplicateL;
     duplicateL.numberOfDuplication = 0;
-    Try{
-        json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
-        TEST_FAIL_MESSAGE("expect exception to be thrown when the crc of the 2 object is same, but none");
-    }Catch(ex){}
+
+	json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
+
 
     TEST_ASSERT_NOT_NULL(duplicateL.list);
-    TEST_ASSERT_EQUAL_STRING("fox.txt", ((FileProperty*)(duplicateL.list->head->data))->name);
+    TEST_ASSERT_EQUAL(1, duplicateL.numberOfDuplication);
+    TEST_ASSERT_EQUAL_STRING("quick.txt", ((FileProperty *)(duplicateL.list->head->data))->name);
+
+    TEST_ASSERT_NOT_NULL(jsonRoot);
+    TEST_ASSERT_NULL(jsonRoot->left);
+    TEST_ASSERT_NOT_NULL(jsonRoot->right);
+    TEST_ASSERT_EQUAL_STRING("quick.txt", jsonRoot->data->name);
+    TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
+    
+
+    free(jsonRoot->right->data);
+    free(jsonRoot->right);
+    free(jsonRoot);
+    // TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
+}
+
+/**
+ *     propertyJson:
+ *          quick.txt{
+ *              crc=5
+ *              ...
+ *          }
+ *          brown.txt{
+ *              crc=10
+ *          }
+ *          fox.txt{
+ *              crc=5
+ *          }
+ *          jumps.txt{
+ *              crc=5
+ *          }
+ *   expect avl:
+ *          5
+ *           \
+ *           10
+ * 
+ *  exception thrown at fox.txt
+ * 
+ *  expect linkedlist[0] :quick.txt - fox.txt - jumps.txt - NULL
+ *                            |                      |
+ *                          head                    tail
+ */
+void test_json2AvlOnFolder_given_propertyJson_4_obj_3_same_crc_expect_update_LL(void)
+{
+    FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5},
+                                     {.name = "brown.txt", .size = 500, .crc = 10},
+                                     {.name = "fox.txt", .size = 500, .crc = 5},
+                                     {.name = "jumps.txt", .size = 500, .crc = 5}};
+    createJsonFileFromFp(TEST_ENV, propertyJsonFp, 4);
+
+    JsonNode *jsonRoot = NULL;
+    DuplicationList duplicateL;
+    duplicateL.numberOfDuplication = 0;
+
+	json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
+
+    TEST_ASSERT_NOT_NULL(duplicateL.list);
+    TEST_ASSERT_EQUAL(1, duplicateL.numberOfDuplication);
+    TEST_ASSERT_EQUAL_STRING("quick.txt", ((FileProperty *)(duplicateL.list->head->data))->name);
+    TEST_ASSERT_NOT_NULL(duplicateL.list->head->next);
+    TEST_ASSERT_EQUAL_STRING("fox.txt", ((FileProperty *)(duplicateL.list->head->next->data))->name);
+    TEST_ASSERT_NOT_NULL(duplicateL.list->head->next->next);
+    TEST_ASSERT_EQUAL_STRING("jumps.txt", ((FileProperty *)(duplicateL.list->head->next->next->data))->name);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_NULL(jsonRoot->left);
@@ -169,8 +230,3 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_throw_exce
     free(jsonRoot);
     // TEST_ASSERT_EQUAL_STRING("brown.txt", jsonRoot->right->data->name);
 }
-
-/**
- *      
- * 
- */ 

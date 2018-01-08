@@ -23,7 +23,9 @@ struct DuplicationList{
 void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL);
 JsonNode *createNodeWithJson(json_t *json, char *name);
 int avlCompareFp(void *data1, Node *data2);
+int avlCompareFpWithCrc(void *data1, Node *data2);
 Item *createItemWithNode(JsonNode *node);
+int searchCrcOnList(LinkedList *list, int numberOfList, int crc);
 
 #define avlAddJsonFp(jsonRootNode, nodeToAdd, avlCompareFp) \
     _avlAdd((Node **)jsonRootNode, (Node *)nodeToAdd, avlCompareFp)

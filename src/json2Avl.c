@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include "Exception.h"
 #include "CException.h"
+#include "AvlSearch.h"
 
 CEXCEPTION_T ex;
 
@@ -13,8 +14,10 @@ void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
     sprintf(propertJsonPath, "%s/%s", path, JSON_FILE_NAME);
     json_t *propertyJson = json_object_from_file(propertJsonPath);
 
+    int duplicateIndex;
     const char *key;
     json_t *value;
+    Node *nodeSearched;
     json_object_foreach(propertyJson, key, value){
         //create an avl node
         JsonNode *jsonNode = createNodeWithJson(value, (char*)key);
@@ -26,21 +29,56 @@ void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
             if(duplicateL->numberOfDuplication == 0){
                 //first insert
                 duplicateL->list = (LinkedList*)malloc(sizeof(LinkedList));
+				ListInit(duplicateL->list);
 
             }
             else{
                 duplicateL->list = (LinkedList *)realloc(duplicateL->list,  \
                                                     sizeof(LinkedList) * (duplicateL->numberOfDuplication + 1));
             }
-            //file already exists
+            
             Item *item = createItemWithNode(jsonNode);
-            // FIXME item should be free somewhere
-            ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication], \
-                              item);
-            //add inside duplicateL
-            Throw(ex);
+            if ((duplicateIndex = searchCrcOnList(duplicateL->list, duplicateL->numberOfDuplication, jsonNode->data->crc)) == -1)
+            {
+                // this duplicated data is not stored previously in the list
+                // search avl on the duplicate node and add into linked list first
+                nodeSearched = avlSearch((Node *)*root, (void *)&jsonNode->data->crc, avlCompareFpWithCrc);
+                if(nodeSearched == NULL){
+                    // something is wrong
+                }
+                else{
+                    Item *itemOnAvl = createItemWithNode((JsonNode*)nodeSearched);
+                    ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
+                                      itemOnAvl);
+                }
+                ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
+                                    item);
+				duplicateL->numberOfDuplication++;
+            }
+            else{
+                ListAddLinkedList(&duplicateL->list[duplicateIndex],
+                                  item);
+            }
         }
     }
+}
+
+/** 
+ * @brief  search whether the crc is exist in the list
+ * @param  *list: the list that contains array of duplication
+ * @param  numberOfList: total number of duplication
+ * @param  crc: the crc to search
+ * @retval position of list that contain the crc, -1 if list didnt contain the crc
+ */
+int searchCrcOnList(LinkedList *list, int numberOfList, int crc){
+    int i;
+    for(i = 0; i<numberOfList; i++){
+        if(((FileProperty*)(list[i].head->data))->crc == crc)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 Item *createItemWithNode(JsonNode *node){
@@ -80,6 +118,22 @@ int avlCompareFp(void *data1, Node *data2){
         return -1;
     }
     else{
+        return 0;
+    }
+}
+
+int avlCompareFpWithCrc(void *data1, Node *data2)
+{
+    if (*((uint32_t*)data1) > ((FileProperty *)(data2->data))->crc)
+    {
+        return 1;
+    }
+    else if (*((uint32_t *)data1) < ((FileProperty *)(data2->data))->crc)
+    {
+        return -1;
+    }
+    else
+    {
         return 0;
     }
 }
