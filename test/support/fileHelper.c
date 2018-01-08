@@ -172,14 +172,56 @@ void createJsonFileFromFp(char *path, FileProperty *fp, int length)
 
 void testAssertEqualDate(Date date1, Date date2, int lineNo){
     char *error;
-    if( date1.year != date2.year    || 
-        date1.month != date2.month  || 
-        date1.day != date2.day      ||
-        date1.hour != date2.hour    ||
-        date1.minute != date2.minute)
+    if (!compare2Date(date1, date2))
     {
         error = createMessage("expected date is not equal to actual date!");
         UNITY_TEST_FAIL(lineNo, error);
     }
 }
 
+int compare2Date(Date date1, Date date2){
+    if (date1.year != date2.year ||
+        date1.month != date2.month ||
+        date1.day != date2.day ||
+        date1.hour != date2.hour ||
+        date1.minute != date2.minute)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+void testAssertListWithFp(LinkedList *list, FileProperty *fp, int length, int lineNo){
+    FileProperty *fp1;
+    char *error;
+    int i;
+    Item *iter = list->head;
+    for(i = 0; i<length; i++){
+        fp1 = (FileProperty*)(iter->data);
+        if(iter == NULL){
+            error = createMessage("list does not contain %d amount of data", length);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+        if (strcmp(fp1->name, (fp+i)->name))
+        {
+            error = createMessage("expected name to be %s, but was %s", (fp+i)->name, fp1->name);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+        if (fp1->size != (fp+i)->size)
+        {
+            error = createMessage("expected size to be %d, but was %d", (fp+i)->size, fp1->size);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+        if (fp1->crc != (fp+i)->crc)
+        {
+            error = createMessage("expected name to be %s, but was %s", (fp+i)->crc, fp1->crc);
+            UNITY_TEST_FAIL(lineNo, error);
+        }
+        // if (!compare2Date(fp1->dateModified, fp->dateModified))
+        // {
+        //     error = createMessage("expected date of %s is not the same with date of %s", fp->name, fp1->name);
+        //     UNITY_TEST_FAIL(lineNo, error);
+        // }
+        iter = iter->next;
+    }
+}

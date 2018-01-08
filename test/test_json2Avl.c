@@ -153,10 +153,12 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_update_LL(
 
 	json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
 
+    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30};
+    FileProperty expectedListFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "fox.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson}};
 
-    TEST_ASSERT_NOT_NULL(duplicateL.list);
+    TEST_ASSERT_LIST_FP(duplicateL.list, expectedListFp, 2);
     TEST_ASSERT_EQUAL(1, duplicateL.numberOfDuplication);
-    TEST_ASSERT_EQUAL_STRING("quick.txt", ((FileProperty *)(duplicateL.list->head->data))->name);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_NULL(jsonRoot->left);
@@ -199,25 +201,25 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_update_LL(
  */
 void test_json2AvlOnFolder_given_propertyJson_4_obj_3_same_crc_expect_update_LL(void)
 {
-    FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5},
-                                     {.name = "brown.txt", .size = 500, .crc = 10},
-                                     {.name = "fox.txt", .size = 500, .crc = 5},
-                                     {.name = "jumps.txt", .size = 500, .crc = 5}};
+    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30};
+    FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "brown.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "fox.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "jumps.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson}};
     createJsonFileFromFp(TEST_ENV, propertyJsonFp, 4);
 
     JsonNode *jsonRoot = NULL;
     DuplicationList duplicateL;
     duplicateL.numberOfDuplication = 0;
 
-	json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
+    json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
 
-    TEST_ASSERT_NOT_NULL(duplicateL.list);
+    FileProperty expectedListFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "fox.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "jumps.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson}};
+
+    TEST_ASSERT_LIST_FP(duplicateL.list, expectedListFp, 3);
     TEST_ASSERT_EQUAL(1, duplicateL.numberOfDuplication);
-    TEST_ASSERT_EQUAL_STRING("quick.txt", ((FileProperty *)(duplicateL.list->head->data))->name);
-    TEST_ASSERT_NOT_NULL(duplicateL.list->head->next);
-    TEST_ASSERT_EQUAL_STRING("fox.txt", ((FileProperty *)(duplicateL.list->head->next->data))->name);
-    TEST_ASSERT_NOT_NULL(duplicateL.list->head->next->next);
-    TEST_ASSERT_EQUAL_STRING("jumps.txt", ((FileProperty *)(duplicateL.list->head->next->next->data))->name);
 
     TEST_ASSERT_NOT_NULL(jsonRoot);
     TEST_ASSERT_NULL(jsonRoot->left);
