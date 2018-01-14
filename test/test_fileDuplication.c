@@ -107,6 +107,8 @@ void test_fileDuplication_given_1File_and_otherFile_in_otherFolder_duplicate(voi
 	DuplicationList dupList;
     dupList = findDuplicate(TEST_ENV);
 
+    listAllDuplication(dupList);
+
     char *expectedFileName[] = {"brown.txt", "quick.txt", "fox.txt"};
     TEST_ASSERT_LIST_FP_NAME(dupList.list, expectedFileName, 3);
 }

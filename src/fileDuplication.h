@@ -4,4 +4,6 @@
 #include "json2Avl.h"
 
 DuplicationList findDuplicate(char *path);
+void listAllDuplication(DuplicationList dl);
+
 #endif // _FILEDUPLICATION_H

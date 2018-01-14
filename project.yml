@@ -10,7 +10,7 @@
   :use_test_preprocessor: TRUE
   :use_auxiliary_dependencies: TRUE
   :build_root: build
-#  :release_build: TRUE
+  :release_build: TRUE
   :test_file_prefix: test_
 
 #:release_build:
@@ -73,6 +73,16 @@
       - -LC:/Msys/extlib              #location of external libraries
       - -ljansson
       - -o ${2}                       #executable file output (Ruby method call param list sub)
+  
+  :release_linker:
+    :executable: gcc                  #absolute file path
+    :name: 'gcc linker'
+    :arguments:
+      - ${1}                          #list of object files to link (Ruby method call param list sub)
+      - -lm                           #link with math header
+      - -ljansson
+      - -o ${2}                       #executable file output (Ruby method call param list sub)
+    
 
 # LIBRARIES
 # These libraries are automatically injected into the build process. Those specified as
