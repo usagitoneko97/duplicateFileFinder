@@ -90,6 +90,7 @@ Date getFileModifiedDate(char *path){
     date.day = foo->tm_mday;
     date.hour = foo->tm_hour;
     date.minute = foo->tm_min;
+    date.seconds = foo->tm_sec;
     return date;
 }
 

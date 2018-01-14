@@ -9,7 +9,8 @@ void tearDown(void)
 {
 }
 
-void test_AvlSearch_NeedToImplement(void)
+void xtest_AvlSearch_NeedToImplement(void)
 {
+    //TODO: complete avlSearch test
     TEST_IGNORE_MESSAGE("Need to Implement AvlSearch");
 }

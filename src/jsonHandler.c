@@ -35,12 +35,14 @@ int compareDate(Date date1, json_t *json){
     realDate.day = json_integer_value(json_object_get(json, "day"));
     realDate.hour = json_integer_value(json_object_get(json, "hour"));
     realDate.minute = json_integer_value(json_object_get(json, "minute"));
+    realDate.seconds = json_integer_value(json_object_get(json, "seconds"));
 
     if (date1.year != realDate.year ||
         date1.month != realDate.month ||
         date1.day != realDate.day ||
         date1.hour != realDate.hour ||
-        date1.minute != realDate.minute)
+        date1.minute != realDate.minute ||
+        date1.seconds != realDate.seconds)
     {
        return 0;
     }
@@ -133,12 +135,13 @@ void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson)
     json_object_set_new(filePropertiesJson, "crc",
                         json_integer(fp->crc));
 
-    timeJson = json_pack("{sisisisisi}",
+    timeJson = json_pack("{sisisisisisi}",
                          "year", fp->dateModified.year,
                          "month", fp->dateModified.month,
                          "day", fp->dateModified.day,
                          "hour", fp->dateModified.hour,
-                         "minute", fp->dateModified.minute);
+                         "minute", fp->dateModified.minute,
+                         "seconds", fp->dateModified.seconds);
 
     json_object_set_new(filePropertiesJson, "dateModified", timeJson);
 

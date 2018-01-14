@@ -20,13 +20,14 @@ typedef struct
     int day;
     int hour;
     int minute;
+    int seconds;
 } Date;
 
 typedef struct{
     char *name;
     long long size;
-    Date dateModified;
     uint32_t crc;
+    Date dateModified;
     //..
 } FileProperty;
 

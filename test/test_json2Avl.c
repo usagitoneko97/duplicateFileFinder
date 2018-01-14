@@ -149,7 +149,7 @@ void test_json2AvlOnFolder_given_propertyJson_3_obj_2_same_crc_expect_update_LL(
 
 	json2AvlOnFolder(&jsonRoot, TEST_ENV, &duplicateL);
 
-    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30};
+    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30, .seconds = 30};
     FileProperty expectedListFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
                                      {.name = "fox.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson}};
 
@@ -255,7 +255,7 @@ void test_json2AvlOnFolder_given_propertyJson_4_obj_3_same_crc_expect_update_LL(
  */
 void test_json2AvlOnFolder_given_propertyJson_4_obj_2_pairs_of_duplicate_expect_linkedlist_2_row(void)
 {
-    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30};
+    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30, .seconds = 30};
     FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
                                      {.name = "brown.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson},
                                      {.name = "fox.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
@@ -323,7 +323,7 @@ void test_json2AvlOnFolder_given_propertyJson_4_obj_2_pairs_of_duplicate_expect_
  */
 void test_json2Avl_given_1SubFolder_expect_linkedListFilled(void){
     char buffer[256];
-    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30};
+    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30, .seconds = 30};
     FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
                                      {.name = "brown.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson},
                                      {.name = "fox.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
