@@ -60,7 +60,7 @@ void tearDown(void)
  */
 void test_fileDuplication_given_2_files_are_duplicate_expect_return_dupList(void)
 {
-    char *fileName[] = {"brown.txt", "quick.txt"};
+    char *fileName[] = {"quick.txt", "brown.txt"};
     createDuplicateFile(TEST_ENV, fileName, 2);
     createTempFile(TEST_ENV, "the.txt", 20);
     createTempFile(TEST_ENV, "fox.txt", 20);
@@ -68,8 +68,8 @@ void test_fileDuplication_given_2_files_are_duplicate_expect_return_dupList(void
 
     DuplicationList dupList;
     dupList = findDuplicate(TEST_ENV);
-
-    TEST_ASSERT_LIST_FP_NAME(dupList.list, fileName, 2);
+    char *expectedFileName[] = {"brown.txt", "quick.txt"};
+    TEST_ASSERT_LIST_FP_NAME(dupList.list, expectedFileName, 2);
 }
 
 /** 

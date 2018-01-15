@@ -354,3 +354,72 @@ void test_json2Avl_given_1SubFolder_expect_linkedListFilled(void){
     //check for the next list
     TEST_ASSERT_LIST_FP(duplicateL.list + 1, expectedListFp1, 3);
 }
+
+/**
+ *     tempFolder       ---->  | subFolder1 |
+ *   | propertyJson|    |      |propertyJson|
+ *   | subFolder1  | ---
+ * 
+ *     propertyJson:           propertyJson"
+ *          quick.txt{             over.txt{
+ *              crc=5                crc = 5
+ *              size = 500           size = 500
+ *              ...                   ...
+ *          }                      }
+ *          brown.txt{            the.txt{
+ *              crc=10               crc=10
+ *              size = 500           size = 500
+ *          }                     }
+ *          fox.txt{            
+ *              crc=5
+ *              size = 250
+ *              size = 500               
+ *          }                     
+ *          jumps.txt{            
+ *              crc10               
+ *          }                    
+ *   expect avl:
+ *          5
+ *           \
+ *           10
+ * 
+ *  expected linkedlist[0] :quick.txt  - over.txt  - NULL
+ *                              |           |
+ *                            head        tail
+ * 
+ *           Linkedlist[1] :brown.txt  - jumps.txt - the.txt  - NULL
+ *                            |                         |
+ *                           head                      tail
+ */
+void test_json2Avl_given_crc_same_size_different_expect_not_duplicate(void){
+    char buffer[256];
+    Date dateModifiedPropertyJson = {.year = 2018, .month = 1, .day = 5, .hour = 20, .minute = 30, .seconds = 30};
+    FileProperty propertyJsonFp[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "brown.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "fox.txt", .size = 250, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                     {.name = "jumps.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson}};
+    createJsonFileFromFp(TEST_ENV, propertyJsonFp, 4);
+
+    FileProperty propertyJsonSubFolder[] = {{.name = "over.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                            {.name = "the.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson}};
+    sprintf(buffer, "%s/%s", TEST_ENV, "subFolder1");
+    mkdir(buffer);
+    createJsonFileFromFp(buffer, propertyJsonSubFolder, 2);
+
+    JsonNode *jsonRoot = NULL;
+    DuplicationList duplicateL;
+    duplicateL.numberOfDuplication = 0;
+
+    json2Avl(&jsonRoot, TEST_ENV, &duplicateL);
+
+    FileProperty expectedListFp0[] = {{.name = "quick.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson},
+                                      {.name = "over.txt", .size = 500, .crc = 5, .dateModified = dateModifiedPropertyJson}};
+
+    FileProperty expectedListFp1[] = {{.name = "brown.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson},
+                                      {.name = "jumps.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson},
+                                      {.name = "the.txt", .size = 500, .crc = 10, .dateModified = dateModifiedPropertyJson}};
+
+    TEST_ASSERT_LIST_FP(duplicateL.list, expectedListFp1, 3);
+    //check for the next list
+    TEST_ASSERT_LIST_FP(duplicateL.list + 1, expectedListFp0, 2);
+}

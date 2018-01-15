@@ -72,6 +72,7 @@
       - -lm                           #link with math header
       - -LC:/Msys/extlib              #location of external libraries
       - -ljansson
+      - -lrhash
       - -o ${2}                       #executable file output (Ruby method call param list sub)
   
   :release_linker:

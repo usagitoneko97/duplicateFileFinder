@@ -1,8 +1,9 @@
 #include "crc.h"
 #include "fileHandler.h"
 #include <string.h>
+#include <rhash.h>
 
-uint32_t rc_crc32(uint32_t crc, const char *buf, size_t len)
+uint32_t xrc_crc32(uint32_t crc, const char *buf, size_t len)
 {
     static uint32_t table[256];
     static int have_table = 0;
@@ -43,9 +44,32 @@ uint32_t rc_crc32(uint32_t crc, const char *buf, size_t len)
     return ~crc;
 }
 
-uint32_t getCrcGivenPath(char *path){
+uint32_t xgetCrcGivenPath(char *path){
     char *buffer = readContentOfGivenPath(path);
     uint32_t crc = rc_crc32(0, buffer, strlen(buffer));
     free(buffer);
     return crc;
+}
+
+uint32_t getCrcGivenPath(char *path){
+    rhash_library_init(); /* initialize static data */
+    char digest[4];
+    int res = rhash_file(RHASH_CRC32, path, digest);
+    if (res < 0)
+    {
+        return 0;
+    }
+    uint32_t num;
+    memcpy(&num, digest, 4);
+    return num;
+}
+
+uint32_t rc_crc32(uint32_t seed, const char *buffer, size_t len)
+{
+    unsigned char *buf = (unsigned char *)buffer;
+    size_t i;
+
+    for (i = 0; i < len; ++i)
+        seed += (unsigned int)(*buf++);
+    return seed;
 }

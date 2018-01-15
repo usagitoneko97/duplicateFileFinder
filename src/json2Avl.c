@@ -65,6 +65,11 @@ void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
         Try{
             avlAddJsonFp(root, jsonNode, avlCompareFp);
         }Catch(ex){
+            nodeSearched = avlSearch((Node *)*root, (void *)&jsonNode->data->crc, avlCompareFpWithCrc);
+            if(jsonNode->data->size != ((JsonNode*)nodeSearched)->data->size){
+                //size is not same, not a duplicate file
+                continue;
+            }
             if(duplicateL->numberOfDuplication == 0){
                 //first insert
                 duplicateL->list = (LinkedList*)malloc(sizeof(LinkedList));

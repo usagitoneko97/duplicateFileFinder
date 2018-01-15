@@ -30,7 +30,7 @@ int main(int args, char *kwargs[]){
     printf("number of duplication found : %d\n", dupL.numberOfDuplication);
     listAllDuplication(dupL);
     return 0;
-} 
+}
 #endif
 
 void listAllDuplication(DuplicationList dl){
@@ -40,7 +40,8 @@ void listAllDuplication(DuplicationList dl){
     for(i = 0; i < dl.numberOfDuplication; i++){
         printf("--------Duplication #%d-----------\n", i+1);
         printf("total numbers of duplication found: %d\n", dl.list[i].len);
-        printf("----------------------------------\n");
+        printf("size : %ld bytes\n", ((FileProperty *)(temp->data))->size);
+            printf("----------------------------------\n");
         for(j = 0; j < dl.list[i].len; j++){
             if(temp == NULL){
                 break;
