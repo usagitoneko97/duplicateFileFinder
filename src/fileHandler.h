@@ -28,6 +28,7 @@ typedef struct{
     long long size;
     uint32_t crc;
     Date dateModified;
+    char *path;
     //..
 } FileProperty;
 

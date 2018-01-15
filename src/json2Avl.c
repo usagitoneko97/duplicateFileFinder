@@ -60,6 +60,8 @@ void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
     json_object_foreach(propertyJson, key, value){
         //create an avl node
         JsonNode *jsonNode = createNodeWithJson(value, (char*)key);
+        jsonNode->data->path = (char*)malloc(sizeof(char)*strlen(path));
+        strcpy(jsonNode->data->path, path);
         // FIXME jsonNode should be free somewhere
         //add to avl
         Try{

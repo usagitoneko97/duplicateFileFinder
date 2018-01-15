@@ -66,6 +66,7 @@ FileProperty* getNextFile(FileObj *fileObj)
                 fileReturn->size = getSize(temp);
                 fileReturn->crc = getCrcGivenPath(temp);
                 fileReturn->dateModified = getFileModifiedDate(temp);
+                fileReturn->path = fileObj->path;
                 return fileReturn;
             }
             else{
