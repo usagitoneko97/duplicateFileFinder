@@ -5,5 +5,6 @@
 
 DuplicationList findDuplicate(char *path);
 void listAllDuplication(DuplicationList dl);
+int assertPath(char *pathArg, char *resultPath);
 
 #endif // _FILEDUPLICATION_H
