@@ -242,3 +242,33 @@ int getSize(char *path){
     return sz;
 }
 
+void removeFileProperty(char *path){
+    char buffer[256];
+    sprintf(buffer, "%s/%s", path, JSON_FILE_NAME);
+    FILE *fptr = fopen(buffer, "r");
+    if(fptr == NULL){
+        return;
+    }
+    fclose(fptr);
+    remove(buffer);
+}
+
+void removeAllFileProperty(char *path){
+    char buffer[256];
+    FolderContent *folder;
+    removeFileProperty(path);
+
+    FileObj fileObj;
+    loadFileObjWithPath(path, &fileObj);
+
+    folder = getNextFolder(&fileObj);
+    while (folder != NULL)
+    {
+        sprintf(buffer, "%s/%s", path, folder->name);
+        removeAllFileProperty(buffer);
+        free(folder);
+        folder = getNextFolder(&fileObj);
+    }
+    fileObj.dr = opendir(path);
+    closedir(fileObj.dr);
+}

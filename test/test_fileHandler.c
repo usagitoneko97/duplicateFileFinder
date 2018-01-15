@@ -321,6 +321,12 @@ void xtest_json_object_from_file_given_no_file(void){
     // TEST_ASSERT_NULL(json);
 }
 
+void test_remove_propertyJson(void){
+    mkdir("dfolder");
+    createTempFile("dfolder", ".property.json", 1);
+    removeAllFileProperty("dfolder");
+}
+
 
 
 /*

@@ -52,4 +52,7 @@ int getSize(char *path);
 char *readContentOfGivenPath(char *path);
 void loadFileObjWithPath(char *workingDir, FileObj *fileObj);
 Date getFileModifiedDate(char *path);
+
+void removeFileProperty(char *path); 
+void removeAllFileProperty(char *path);
 #endif // _FILEHANDLER_H
