@@ -7,14 +7,14 @@
  * @param  *path: the path to search
  * @retval a linked list that contains all the duplication 
  */
-DuplicationList findDuplicate(char *path)
+DuplicationList findDuplicate(const char *path)
 {
     //create propertyJson on all the folder
-    updateCreateAllJsonOnFolder(path);
+    updateCreateAllJsonOnFolder((char*)path);
     JsonNode *root = NULL;
     DuplicationList duplicateL;
 	duplicateL.numberOfDuplication = 0;
-    json2Avl(&root, path, &duplicateL);
+    json2Avl(&root, (char*)path, &duplicateL);
 
     //delete the whole avl tree
     freeJsonNode(root);

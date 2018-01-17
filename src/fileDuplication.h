@@ -3,9 +3,9 @@
 
 #include "json2Avl.h"
 
-DuplicationList findDuplicate(char *path);
+DuplicationList findDuplicate(const char *path);
 void listAllDuplication(DuplicationList dl);
 int assertPath(char *pathArg, char *resultPath);
-void removeAllFileProperty(char *path);
+void removeAllFileProperty(const char *path);
 
 #endif // _FILEDUPLICATION_H
