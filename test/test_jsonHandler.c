@@ -37,7 +37,6 @@ void tearDown(void)
  */
 void test_createJson_given_1File_1Folder_1File(void)
 {
-    // TODO: complete createJson TEST
     FileProperty fp = createTempFile(TEST_ENV, "test123.txt", 23);
 
     char buffer[256];
@@ -78,6 +77,12 @@ void test_createJson_given_2File_expect_create_json_and_update_file(void)
 
 //---------------------updateJson test cases-------------------------//
 
+/** 
+ *   tempFolder
+ *      -.propertyJson
+ * 
+ *  expect : propertyJson empty
+ */
 void test_updateJson_on_emptyFolder_expect_propertyJson_empty(void){
 
     //create an empty .property.json

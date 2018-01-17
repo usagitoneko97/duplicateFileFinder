@@ -20,8 +20,3 @@ void tearDown(void)
 {
     //remove test folder after every test
 }
-
-void test_rhash(void){
-    uint32_t crc = getCrcGivenPath("temp1/test.txt");
-    TEST_ASSERT_GREATER_THAN(0, crc);
-}
