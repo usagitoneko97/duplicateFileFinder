@@ -1,5 +1,6 @@
 # Duplicate File Finder
 
+Find duplicate files by compute and compare each cyclic redundancy check (crc) of the file.
 
 ## Code implementation
 include the header file
@@ -7,15 +8,15 @@ include the header file
 #include "fileDuplication.h"
 ```
 obtained a list of duplication by :
-```
+```c
 DuplicationList dupL = findDuplicate(path_for_searching_duplication);
 ```
 prettyprint the result by:
-```
+```c
 listAllDuplication(dupL);
 ```
 
-## usage
+## Command line usage
 ```
 duplicateFileFinder [-f P] [-d P] 
 
