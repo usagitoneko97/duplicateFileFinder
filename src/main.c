@@ -3,23 +3,37 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "fileDuplication.h"
+#include <getopt.h>
 
+static int verbose_flag;
 int main(int args, char *kwargs[])
 {
     int c;
-    int fFlag = 0, dFlag = 0;
+    int fFlag = 0, cFlag = 0;
     char *path = NULL;
+    int option_index = 0;
 
     opterr = 0;
-    while ((c = getopt(args, kwargs, "f:d:")) != -1)
+
+    static struct option long_options[] =
+        {
+            /* These options set a flag. */
+            {"verbose", no_argument, &verbose_flag, 1},
+            {"brief", no_argument, &verbose_flag, 0},
+            /* These options don’t set a flag.
+             We distinguish them by their indices. */
+            {"find", required_argument, 0, 'f'},
+            {"clean", required_argument, 0, 'c'},
+            {0, 0, 0, 0}};
+    while ((c = getopt_long(args, kwargs, "f:c:", long_options, &option_index)) != -1)
     {
         switch(c){
             case 'f':
                 fFlag = 1;
                 path = optarg;
                 break;
-            case 'd':
-                dFlag = 1;
+            case 'c':
+                cFlag = 1;
                 path = optarg;
                 break;
             case '?':
@@ -44,7 +58,7 @@ int main(int args, char *kwargs[])
         printf("number of duplication found : %d\n\n", dupL.numberOfDuplication);
         listAllDuplication(dupL);
     }
-    if(dFlag){
+    if(cFlag){
         removeAllFileProperty(path);
     }
     return 1;
