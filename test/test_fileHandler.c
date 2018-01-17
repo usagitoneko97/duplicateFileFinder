@@ -26,6 +26,15 @@ void tearDown(void){
     removeDir(TEST_ENV);
 }
 
+/** 
+ *  tempFolder
+ *  |test123.txt|
+ *  |test456.txt|
+ * 
+ *  removeDir(tempFolder);
+ * 
+ * expect: tempFolder does not exist
+ */
 void test_removeDir_given_2_file_expect_empty(void){
     createTempFile(TEST_ENV, "test123.txt", 0);
     createTempFile(TEST_ENV, "test456.txt", 0);
@@ -36,6 +45,15 @@ void test_removeDir_given_2_file_expect_empty(void){
     TEST_ASSERT_NULL(dir);
 }
 
+/** 
+ *  tempFolder          ---->   dummy
+ *  |test123.txt|      |      |        |
+ *  |   dummy   | -----|
+ * 
+ *  removeDir(tempFolder);
+ * 
+ * expect: tempFolder and dummy folder does not exist
+ */
 void test_removeDir_given_1File_1Folder_expect_empty(void){
     createTempFile(TEST_ENV, "test123.txt", 0);
     char buffer[256];
@@ -47,6 +65,15 @@ void test_removeDir_given_1File_1Folder_expect_empty(void){
     TEST_ASSERT_NULL(dir);
 }
 
+/** 
+ *  tempFolder          ---->    dummy
+ *  |test123.txt|      |      |test123.txt|
+ *  |   dummy   | -----|
+ * 
+ *  removeDir(tempFolder);
+ * 
+ * expect: tempFolder and dummy folder does not exist
+ */
 void test_removeDir_given_1File_1Folder_with_1File_expect_empty(void){
     createTempFile(TEST_ENV, "test123.txt", 0);
     char buffer[256];
@@ -132,7 +159,19 @@ void test_getNextFile_given_1File_1folder_1FIle_expect_get_all_files(void){
     closedir(fileObj.dr);
 }
 
-
+/** 
+ *   tempFolder
+ *       -test123.txt
+ *       -stella.txt
+ *       dummy
+ *          -test456.txt
+ *          -test789.txt
+ * 
+ * expect: getnextFile will return file in order :
+ *              stella.txt
+ *              test123.txt
+ *              NULL
+ */
 void test_getNextFile_given_2File_1folder_2FIle_expect_get_only_files_on_that_folder(void)
 {
     FileObj fileObj;
@@ -166,6 +205,13 @@ void test_getNextFile_given_2File_1folder_2FIle_expect_get_only_files_on_that_fo
 }
 
 //------------------------getNextFolder test cases--------------//
+
+/** 
+ *  tempFolder
+ *      -
+ * 
+ * expect : get next folder return NULL as no folder contains inside tempFolder
+ */
 void test_getNextFolder_given_noFolder_expect_return_null(void){
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
@@ -175,6 +221,12 @@ void test_getNextFolder_given_noFolder_expect_return_null(void){
     free(nextFile);
 }
 
+/** 
+ *   tempFolder
+ *      -dummy
+ * 
+ *  expect: get next folder return dummy
+ */
 void test_getNextFolder_given_1folder_expect_return_folder(void){
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
@@ -192,6 +244,15 @@ void test_getNextFolder_given_1folder_expect_return_folder(void){
     free(nextFolder);
 }
 
+/** 
+ *  tempFolder
+ *      -dummy
+ *      -dummy1
+ * 
+ * expect : get next folder return folder (in order):
+ *          dummy1
+ *          dummy2
+ */
 void test_get_nextFolder_given_2folder_expect_return_2Folder(void){
     FileObj fileObj;
     fileObj.dr = opendir(TEST_ENV);
@@ -214,120 +275,6 @@ void test_get_nextFolder_given_2folder_expect_return_2Folder(void){
 
     closedir(fileObj.dr);
 }
-
-/** 
- *  tempFolder         -- Folder1
- *  |stella.txt|      ^   |jang.txt|
- *  |  Folder1 |-----|
- */
-void xtest_(){
-
-}
-
-
-
-//------------------------dummy test-------------------------//
-#include <time.h>
-
-void xtest_jansson_iterate(void){
-    json_t *filePropertiesJson;
-    json_t *fileParent;
-    fileParent = json_object();
-    filePropertiesJson = json_object();
-    json_object_set_new(filePropertiesJson, "size",
-                        json_integer(500));
-    json_object_set_new(fileParent, "stella.txt", filePropertiesJson);
-    json_object_set_new(filePropertiesJson, "size",
-                        json_integer(1000));
-    json_object_set_new(fileParent, "jang.txt", filePropertiesJson);
-    char buffer[256];
-    sprintf(buffer, "%s/%s", TEST_ENV, JSON_FILE_NAME);
-    json_object_to_file(buffer, fileParent);
-
-    void *temp;
-    const char *key;
-    json_t *value;
-    json_object_foreach_safe(fileParent, temp, key, value){
-        
-    }
-}
-
-void xtest_jansson_gc(void)
-{
-    json_t *json = json_object();
-    json_t *json1 = json_object();
-
-    json_object_set_new(json, "new", json1);
-
-    json_decref(json);
-    TEST_ASSERT_NULL(json1);
-}
-void delay500ms()
-{
-    // Converting time into milli_seconds
-    int milli_seconds = 100;
-
-    // Stroing start time
-    clock_t start_time = clock();
-
-    // looping till required time is not acheived
-    while (clock() < start_time + milli_seconds);
-}
-
-
-void xtest_memoryLeak_jansson(void){
-    json_t *fileParentJson;
-    json_t *filePropertiesJson;
-
-    while(1){
-    fileParentJson = json_object();
-
-    filePropertiesJson = json_object();
-    json_object_set_new(filePropertiesJson, "size",
-                        json_integer(2));
-    json_object_set_new(fileParentJson, "file->name", filePropertiesJson);
-
-    filePropertiesJson = json_object();
-    json_object_set_new(filePropertiesJson, "size",
-                        json_integer(3));
-    json_object_set_new(fileParentJson, "name21", filePropertiesJson);
-
-    filePropertiesJson = json_object();
-    json_object_set_new(filePropertiesJson, "size",
-                        json_integer(3));
-    json_object_set_new(fileParentJson, "name21s", filePropertiesJson);
-
-    json_decref(fileParentJson);
-    json_decref(filePropertiesJson);
-
-    delay500ms();
-    // printf("stella jang!");
-    }
-}
-
-void dummy1(json_t *json){
-    json_error_t *error;
-    json = json_load_file("tempFolder/.property.json", JSON_DECODE_ANY, error);
-}
-
-void xtest_json_object_from_file_given_no_file(void){
-    createTempFile(TEST_ENV, ".property.json", 1);
-    json_t json;
-    json_error_t *error;
-    dummy1(&json);
-    // json = json_load_file("tempFolder/.property.json", JSON_DECODE_ANY, error);
-
-    // json = json_object_from_file("tempFolder/.property.json");
-    // TEST_ASSERT_NULL(json);
-}
-
-void test_remove_propertyJson(void){
-    mkdir("dfolder");
-    createTempFile("dfolder", ".property.json", 1);
-    removeAllFileProperty("dfolder");
-}
-
-
 
 /*
 void test_jsonObjectToFile(void){

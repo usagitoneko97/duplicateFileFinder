@@ -32,19 +32,22 @@ void tearDown(void)
 
 /** 
  *    tempFolder              dummy
- *   |test123.txt|      --> |test123.txt|    
+ *   |test123.txt|      --> |test456.txt|    
  *   |   dummy   | -----|  
  */
-void xtest_createJson_given_1File_1Folder_1File(void)
+void test_createJson_given_1File_1Folder_1File(void)
 {
     // TODO: complete createJson TEST
-    createTempFile(TEST_ENV, "test123.txt", 23);
+    FileProperty fp = createTempFile(TEST_ENV, "test123.txt", 23);
 
     char buffer[256];
     sprintf(buffer, "%s/%s", TEST_ENV, "dummy");
     mkdir(buffer);
     createTempFile(buffer, "test456.txt", 23);
+
     createJson((char *)TEST_ENV);
+
+    TEST_ASSERT_JSON_PROPERTY_PATH(TEST_ENV, &fp, 1);
 }
 
 /** 
