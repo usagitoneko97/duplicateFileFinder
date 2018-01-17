@@ -1,6 +1,13 @@
 #include "jsonHandler.h"
 
 
+/** 
+ * @brief  create a .porperty.json on current folder based on file that present
+ *          on this folder
+ * @note   only call this when .property.json is not present in that folder
+ * @param  *workingDir: path to the folder
+ * @retval None
+ */
 void createJson(char *workingDir)
 {
     json_t *fileParentJson;
@@ -50,9 +57,9 @@ int compareDate(Date date1, json_t *json){
 }
 
 /** 
- * @brief  only called this func when .property.json exist
- *         compare getNextFile with .property.json
- * @note   
+ * @brief  update .property.json file based on all the files in
+ *         current directory
+ * @note   only called this func when .property.json exist
  * @param  *path: path to the folder
  * @retval None
  */
@@ -124,6 +131,14 @@ void updateJson(char *path)
     json_decref(json);
 }
 
+/** 
+ * @brief  fill up the json object with all the parameters
+ *         specified in fileProperty
+ * @param  *fp: properties of file
+ * @param  *fileParentJson: json object that contains all the
+ *                          parameters of that file property
+ * @retval None
+ */
 void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson)
 {
     json_t *filePropertiesJson;
@@ -148,6 +163,13 @@ void createJsonObjectFromFileProp(FileProperty *fp, json_t *fileParentJson)
     json_object_set_new(fileParentJson, fp->name, filePropertiesJson);
 }
 
+/** 
+ * @brief  create a json object that contains all the information
+ *         of the present files in this directory.
+ * @param  *fileObj: file parameters that contains information of
+ *                   the current dir and state of iteration of files
+ * @retval return a json object 
+ */
 json_t *createJsonObjectOnFolder(FileObj *fileObj)
 {
     json_t *fileParentJson;
@@ -164,6 +186,14 @@ json_t *createJsonObjectOnFolder(FileObj *fileObj)
     return fileParentJson;
 }
 
+/** 
+ * @brief  update .property.json (or create if it's not exists)
+ *         with the files contains in the current folders and also
+ *         the sub folder
+ * @note   is a wrapper that calls updateJson and createJson
+ * @param  *path: path to that folder
+ * @retval None
+ */
 void updateCreateAllJsonOnFolder(char *path)
 {
     //check if property json exist
@@ -199,35 +229,3 @@ void updateCreateAllJsonOnFolder(char *path)
     fileObj.dr = opendir(path);
     closedir(fileObj.dr);
 }
-
-    /*
-void createJson(char *workingDir){
-    json_t *fileParentJson;
-    char buffer[255];
-    FolderContent *folder;
-    FileObj fileObj;
-    loadFileObjWithPath(workingDir, &fileObj);
-
-    fileParentJson = createJsonObjectOnFolder(&fileObj);
-    sprintf(buffer, "%s/%s", workingDir, JSON_FILE_NAME);
-    json_object_to_file(buffer, fileParentJson);
-    
-    // FIXME json_decref(fileParentJson) will cause malloc after that bad memory access
-    // free(fileParentJson);
-    // json_decref(filePropertiesJson);
-
-    // printf(json_dumps(fileParentJson, JSON_INDENT(4)));
-    //reload the dr
-    closedir(fileObj.dr);
-    fileObj.dr = opendir(workingDir);
-    folder = getNextFolder(&fileObj);
-    while(folder != NULL){
-		sprintf(buffer, "%s/%s", workingDir, folder->name);
-        createJson(buffer);
-        free(folder);
-        folder = getNextFolder(&fileObj);
-    }
-    fileObj.dr = opendir(workingDir);
-    closedir(fileObj.dr);
-    return;
-}*/

@@ -155,11 +155,3 @@ void test_fileDuplication_given_2_total_duplication(void){
     TEST_ASSERT_LIST_FP_NAME(dupList.list, expectedFileName2, 2);
     TEST_ASSERT_LIST_FP_NAME(dupList.list + 1, expectedFileName, 3);
 }
-
-void test_assertPath(void){
-    char resultPath[256];
-    TEST_ASSERT_EQUAL(1, assertPath("\"testFolder 1\"", resultPath));
-    printf("%s", resultPath);
-
-    TEST_ASSERT_EQUAL(0, assertPath("test folder", resultPath));
-}

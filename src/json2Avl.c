@@ -150,6 +150,14 @@ int searchCrcOnList(LinkedList *list, int numberOfList, int crc){
     return -1;
 }
 
+/** 
+ * @brief  create item instance and point data to the item of avl node
+ * @note   1. item data is pointed to avl node, freeing avl node will cause loss 
+ *          of data on this item
+ *         2. item need to be free after it's not used anymore
+ * @param  *node: avl node
+ * @retval pointer to Item
+ */
 Item *createItemWithNode(JsonNode *node){
     Item *item = (Item*)malloc(sizeof(Item));
     (item->data) = (void*)node->data;

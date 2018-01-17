@@ -41,14 +41,3 @@ void listAllDuplication(DuplicationList dl){
         printf("----------------------------------\n\n");
     }
 }
-
-int assertPath(char *pathArg, char *resultPath)
-{
-    int length = strlen(pathArg);
-    if (pathArg[0] != '"' || pathArg[length - 1] != '"')
-    {
-        return 0;
-    }
-    strncpy(resultPath, pathArg + 1, length - 1);
-    return 1;
-}
