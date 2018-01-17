@@ -59,54 +59,76 @@ void json2AvlOnFolder(JsonNode **root, char *path, DuplicationList *duplicateL)
     Node *nodeSearched;
     json_object_foreach(propertyJson, key, value){
         //create an avl node
-        JsonNode *jsonNode = createNodeWithJson(value, (char*)key);
-        jsonNode->data->path = (char*)malloc(sizeof(char)*strlen(path));
-        strcpy(jsonNode->data->path, path);
+        JsonNode *jsonNode = createNodeWithJson(value, (char*)key, path);
+        
         // FIXME jsonNode should be free somewhere
         //add to avl
         Try{
             avlAddJsonFp(root, jsonNode, avlCompareFp);
         }Catch(ex){
+            //duplicated file found
             nodeSearched = avlSearch((Node *)*root, (void *)&jsonNode->data->crc, avlCompareFpWithCrc);
-            if(jsonNode->data->size != ((JsonNode*)nodeSearched)->data->size){
+
+            if (JNODE_FILE_SIZE_NOT_SAME(jsonNode, nodeSearched))
+            {
                 //size is not same, not a duplicate file
                 continue;
             }
-            if(duplicateL->numberOfDuplication == 0){
-                //first insert
-                duplicateL->list = (LinkedList*)malloc(sizeof(LinkedList));
-				ListInit(duplicateL->list);
 
-            }
-            else{
-                duplicateL->list = (LinkedList *)realloc(duplicateL->list,  \
-                                                    sizeof(LinkedList) * (duplicateL->numberOfDuplication + 1));
-            }
-            
+            listAllocMem(duplicateL);
             Item *item = createItemWithNode(jsonNode);
-            if ((duplicateIndex = searchCrcOnList(duplicateL->list, duplicateL->numberOfDuplication, jsonNode->data->crc)) == -1)
-            {
-                // this duplicated data is not stored previously in the list
-                // search avl on the duplicate node and add into linked list first
-                nodeSearched = avlSearch((Node *)*root, (void *)&jsonNode->data->crc, avlCompareFpWithCrc);
-                if(nodeSearched == NULL){
-                    // something is wrong
-                }
-                else{
-					ListInit(duplicateL->list + duplicateL->numberOfDuplication);
-                    Item *itemOnAvl = createItemWithNode((JsonNode*)nodeSearched);
-                    ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
-                                      itemOnAvl);
-                }
-                ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
-                                    item);
-				duplicateL->numberOfDuplication++;
-            }
-            else{
-                ListAddLinkedList(&duplicateL->list[duplicateIndex],
-                                  item);
-            }
+
+            addDuplicateItemInList(duplicateL, item, (JsonNode*)nodeSearched);
         }
+    }
+}
+
+/** 
+ * @brief  add duplicated item in the list. If the item already exist in the list, 
+ *         nodeSearched will be add to the list first followed by duplicated item
+ * @note   nodeSearched does not necessary added to the list if its already exist
+ * @param  *duplicateL: Duplication list structure
+ * @param  *duplicatedItem: item that thrown by avl (duplicated)
+ * @param  *nodeSearched:  item that exist in avl that causes the duplication
+ * @retval None
+ */
+static void 
+addDuplicateItemInList(DuplicationList *duplicateL, Item *duplicatedItem, JsonNode *nodeSearched){
+    int duplicateIndex;
+    if ((duplicateIndex = searchCrcOnList(duplicateL->list, duplicateL->numberOfDuplication,        \
+                                            ((FileProperty*)(duplicatedItem->data))->crc)) == -1)
+    {
+        // this duplicated data is not stored previously in the list
+        ListInit(duplicateL->list + duplicateL->numberOfDuplication);
+        Item *itemOnAvl = createItemWithNode((JsonNode *)nodeSearched);
+        ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
+                          itemOnAvl);
+        ListAddLinkedList(&duplicateL->list[duplicateL->numberOfDuplication],
+                          duplicatedItem);
+        duplicateL->numberOfDuplication++;
+    }
+    else
+    {
+        ListAddLinkedList(&duplicateL->list[duplicateIndex],
+                          duplicatedItem);
+    }
+}
+
+/** 
+ * @brief  allocate or expand the memory space for linked list in DuplicationList
+ * @param  *duplicateL: duplicate list that may or may not contain the duplication
+ *                      info previously
+ * @retval None
+ */
+static void listAllocMem(DuplicationList *duplicateL){
+    if(duplicateL->numberOfDuplication == 0){
+        //first insert
+        duplicateL->list = (LinkedList*)malloc(sizeof(LinkedList));
+	    ListInit(duplicateL->list);
+
+    }else{
+        duplicateL->list = (LinkedList *)realloc(duplicateL->list,  \
+                                sizeof(LinkedList) * (duplicateL->numberOfDuplication + 1));
     }
 }
 
@@ -141,7 +163,7 @@ Item *createItemWithNode(JsonNode *node){
  * @param  *json: json object for specific file
  * @retval a json Node that contain all param from json object
  */
-JsonNode *createNodeWithJson(json_t *json, char *name){
+JsonNode *createNodeWithJson(json_t *json, char *name, char *path){
     JsonNode *jsonNode = (JsonNode *)malloc(sizeof(JsonNode));
     jsonNode->data = (FileProperty *)malloc(sizeof(FileProperty));
     json_t *jsonSize;
@@ -153,6 +175,8 @@ JsonNode *createNodeWithJson(json_t *json, char *name){
     jsonNode->data->size = json_integer_value(jsonSize);
     jsonNode->data->crc = json_integer_value(jsoncrc);
     jsonNode->data->name = name;
+    jsonNode->data->path = (char*)malloc(sizeof(char)*strlen(path));
+    strcpy(jsonNode->data->path, path);
     //TODO : add the date
     return jsonNode;
 }
