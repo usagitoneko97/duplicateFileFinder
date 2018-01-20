@@ -70,17 +70,20 @@
       - ${1}                          #list of object files to link (Ruby method call param list sub)
       - -lm                           #link with math header
       - -ljansson
-      - -lrhas
+      - -lrhash
       - -o ${2}                       #executable file output (Ruby method call param list sub)
+      
+
   
   :release_linker:
     :executable: gcc                  #absolute file path
     :name: 'gcc linker'
     :arguments:
       - -IC:/Users/User_Lenovo/AppData/Local/Programs/Python/Python36-32/include
-      
+      - -LC:/Users/User_Lenovo/AppData/Local/Programs/Python/Python36-32/libs
       - ${1}                          #list of object files to link (Ruby method call param list sub)
       - build/release/out/c/fileDuplication_wrap.o
+      - -lpython36
       - -lm                           #link with math header
       - -ljansson
       - -lrhash
