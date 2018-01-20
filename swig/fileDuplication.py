@@ -95,6 +95,588 @@ except __builtin__.Exception:
         pass
     _newclass = 0
 
+
+def createJson(workingDir):
+    return _fileDuplication.createJson(workingDir)
+createJson = _fileDuplication.createJson
+
+def updateJson(path):
+    return _fileDuplication.updateJson(path)
+updateJson = _fileDuplication.updateJson
+
+def createJsonObjectOnFolder(fileObj):
+    return _fileDuplication.createJsonObjectOnFolder(fileObj)
+createJsonObjectOnFolder = _fileDuplication.createJsonObjectOnFolder
+
+def createJsonObjectFromFileProp(fp, fileParentJson):
+    return _fileDuplication.createJsonObjectFromFileProp(fp, fileParentJson)
+createJsonObjectFromFileProp = _fileDuplication.createJsonObjectFromFileProp
+
+def updateCreateAllJsonOnFolder(path):
+    return _fileDuplication.updateCreateAllJsonOnFolder(path)
+updateCreateAllJsonOnFolder = _fileDuplication.updateCreateAllJsonOnFolder
+
+def compareDate(date1, json):
+    return _fileDuplication.compareDate(date1, json)
+compareDate = _fileDuplication.compareDate
+JSON_FILE_NAME = _fileDuplication.JSON_FILE_NAME
+class FileObj(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, FileObj, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, FileObj, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["dr"] = _fileDuplication.FileObj_dr_set
+    __swig_getmethods__["dr"] = _fileDuplication.FileObj_dr_get
+    if _newclass:
+        dr = _swig_property(_fileDuplication.FileObj_dr_get, _fileDuplication.FileObj_dr_set)
+    __swig_setmethods__["path"] = _fileDuplication.FileObj_path_set
+    __swig_getmethods__["path"] = _fileDuplication.FileObj_path_get
+    if _newclass:
+        path = _swig_property(_fileDuplication.FileObj_path_get, _fileDuplication.FileObj_path_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_FileObj()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_FileObj
+    __del__ = lambda self: None
+FileObj_swigregister = _fileDuplication.FileObj_swigregister
+FileObj_swigregister(FileObj)
+
+class Date(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, Date, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, Date, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["year"] = _fileDuplication.Date_year_set
+    __swig_getmethods__["year"] = _fileDuplication.Date_year_get
+    if _newclass:
+        year = _swig_property(_fileDuplication.Date_year_get, _fileDuplication.Date_year_set)
+    __swig_setmethods__["month"] = _fileDuplication.Date_month_set
+    __swig_getmethods__["month"] = _fileDuplication.Date_month_get
+    if _newclass:
+        month = _swig_property(_fileDuplication.Date_month_get, _fileDuplication.Date_month_set)
+    __swig_setmethods__["day"] = _fileDuplication.Date_day_set
+    __swig_getmethods__["day"] = _fileDuplication.Date_day_get
+    if _newclass:
+        day = _swig_property(_fileDuplication.Date_day_get, _fileDuplication.Date_day_set)
+    __swig_setmethods__["hour"] = _fileDuplication.Date_hour_set
+    __swig_getmethods__["hour"] = _fileDuplication.Date_hour_get
+    if _newclass:
+        hour = _swig_property(_fileDuplication.Date_hour_get, _fileDuplication.Date_hour_set)
+    __swig_setmethods__["minute"] = _fileDuplication.Date_minute_set
+    __swig_getmethods__["minute"] = _fileDuplication.Date_minute_get
+    if _newclass:
+        minute = _swig_property(_fileDuplication.Date_minute_get, _fileDuplication.Date_minute_set)
+    __swig_setmethods__["seconds"] = _fileDuplication.Date_seconds_set
+    __swig_getmethods__["seconds"] = _fileDuplication.Date_seconds_get
+    if _newclass:
+        seconds = _swig_property(_fileDuplication.Date_seconds_get, _fileDuplication.Date_seconds_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_Date()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_Date
+    __del__ = lambda self: None
+Date_swigregister = _fileDuplication.Date_swigregister
+Date_swigregister(Date)
+
+class FileProperty(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, FileProperty, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, FileProperty, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["name"] = _fileDuplication.FileProperty_name_set
+    __swig_getmethods__["name"] = _fileDuplication.FileProperty_name_get
+    if _newclass:
+        name = _swig_property(_fileDuplication.FileProperty_name_get, _fileDuplication.FileProperty_name_set)
+    __swig_setmethods__["size"] = _fileDuplication.FileProperty_size_set
+    __swig_getmethods__["size"] = _fileDuplication.FileProperty_size_get
+    if _newclass:
+        size = _swig_property(_fileDuplication.FileProperty_size_get, _fileDuplication.FileProperty_size_set)
+    __swig_setmethods__["crc"] = _fileDuplication.FileProperty_crc_set
+    __swig_getmethods__["crc"] = _fileDuplication.FileProperty_crc_get
+    if _newclass:
+        crc = _swig_property(_fileDuplication.FileProperty_crc_get, _fileDuplication.FileProperty_crc_set)
+    __swig_setmethods__["dateModified"] = _fileDuplication.FileProperty_dateModified_set
+    __swig_getmethods__["dateModified"] = _fileDuplication.FileProperty_dateModified_get
+    if _newclass:
+        dateModified = _swig_property(_fileDuplication.FileProperty_dateModified_get, _fileDuplication.FileProperty_dateModified_set)
+    __swig_setmethods__["path"] = _fileDuplication.FileProperty_path_set
+    __swig_getmethods__["path"] = _fileDuplication.FileProperty_path_get
+    if _newclass:
+        path = _swig_property(_fileDuplication.FileProperty_path_get, _fileDuplication.FileProperty_path_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_FileProperty()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_FileProperty
+    __del__ = lambda self: None
+FileProperty_swigregister = _fileDuplication.FileProperty_swigregister
+FileProperty_swigregister(FileProperty)
+
+class FolderContent(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, FolderContent, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, FolderContent, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["name"] = _fileDuplication.FolderContent_name_set
+    __swig_getmethods__["name"] = _fileDuplication.FolderContent_name_get
+    if _newclass:
+        name = _swig_property(_fileDuplication.FolderContent_name_get, _fileDuplication.FolderContent_name_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_FolderContent()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_FolderContent
+    __del__ = lambda self: None
+FolderContent_swigregister = _fileDuplication.FolderContent_swigregister
+FolderContent_swigregister(FolderContent)
+
+
+def updateFileInfo():
+    return _fileDuplication.updateFileInfo()
+updateFileInfo = _fileDuplication.updateFileInfo
+
+def _updateFileInfo(dr, path):
+    return _fileDuplication._updateFileInfo(dr, path)
+_updateFileInfo = _fileDuplication._updateFileInfo
+
+def isRegularFile(path):
+    return _fileDuplication.isRegularFile(path)
+isRegularFile = _fileDuplication.isRegularFile
+
+def getNextFile(fileObj):
+    return _fileDuplication.getNextFile(fileObj)
+getNextFile = _fileDuplication.getNextFile
+
+def getnextFileIgnoreProperty(fileObj):
+    return _fileDuplication.getnextFileIgnoreProperty(fileObj)
+getnextFileIgnoreProperty = _fileDuplication.getnextFileIgnoreProperty
+
+def getNextFolder(fileObj):
+    return _fileDuplication.getNextFolder(fileObj)
+getNextFolder = _fileDuplication.getNextFolder
+
+def openSrc():
+    return _fileDuplication.openSrc()
+openSrc = _fileDuplication.openSrc
+
+def removeDir(path):
+    return _fileDuplication.removeDir(path)
+removeDir = _fileDuplication.removeDir
+
+def _removeDir(dr, path):
+    return _fileDuplication._removeDir(dr, path)
+_removeDir = _fileDuplication._removeDir
+
+def getSize(path):
+    return _fileDuplication.getSize(path)
+getSize = _fileDuplication.getSize
+
+def readContentOfGivenPath(path):
+    return _fileDuplication.readContentOfGivenPath(path)
+readContentOfGivenPath = _fileDuplication.readContentOfGivenPath
+
+def loadFileObjWithPath(workingDir, fileObj):
+    return _fileDuplication.loadFileObjWithPath(workingDir, fileObj)
+loadFileObjWithPath = _fileDuplication.loadFileObjWithPath
+
+def getFileModifiedDate(path):
+    return _fileDuplication.getFileModifiedDate(path)
+getFileModifiedDate = _fileDuplication.getFileModifiedDate
+
+def removeFileProperty(path):
+    return _fileDuplication.removeFileProperty(path)
+removeFileProperty = _fileDuplication.removeFileProperty
+
+def json_object_to_file(buffer, json):
+    return _fileDuplication.json_object_to_file(buffer, json)
+json_object_to_file = _fileDuplication.json_object_to_file
+
+def json_object_from_file(buffer):
+    return _fileDuplication.json_object_from_file(buffer)
+json_object_from_file = _fileDuplication.json_object_from_file
+
+def rc_crc32(crc, buf, len):
+    return _fileDuplication.rc_crc32(crc, buf, len)
+rc_crc32 = _fileDuplication.rc_crc32
+
+def getCrcGivenPath(path):
+    return _fileDuplication.getCrcGivenPath(path)
+getCrcGivenPath = _fileDuplication.getCrcGivenPath
+
+def findDuplicate(path):
+    return _fileDuplication.findDuplicate(path)
+findDuplicate = _fileDuplication.findDuplicate
+
+def listAllDuplication(dl):
+    return _fileDuplication.listAllDuplication(dl)
+listAllDuplication = _fileDuplication.listAllDuplication
+
+def assertPath(pathArg, resultPath):
+    return _fileDuplication.assertPath(pathArg, resultPath)
+assertPath = _fileDuplication.assertPath
+
+def removeAllFileProperty(path):
+    return _fileDuplication.removeAllFileProperty(path)
+removeAllFileProperty = _fileDuplication.removeAllFileProperty
+class JsonNode(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, JsonNode, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, JsonNode, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["left"] = _fileDuplication.JsonNode_left_set
+    __swig_getmethods__["left"] = _fileDuplication.JsonNode_left_get
+    if _newclass:
+        left = _swig_property(_fileDuplication.JsonNode_left_get, _fileDuplication.JsonNode_left_set)
+    __swig_setmethods__["right"] = _fileDuplication.JsonNode_right_set
+    __swig_getmethods__["right"] = _fileDuplication.JsonNode_right_get
+    if _newclass:
+        right = _swig_property(_fileDuplication.JsonNode_right_get, _fileDuplication.JsonNode_right_set)
+    __swig_setmethods__["balanceFactor"] = _fileDuplication.JsonNode_balanceFactor_set
+    __swig_getmethods__["balanceFactor"] = _fileDuplication.JsonNode_balanceFactor_get
+    if _newclass:
+        balanceFactor = _swig_property(_fileDuplication.JsonNode_balanceFactor_get, _fileDuplication.JsonNode_balanceFactor_set)
+    __swig_setmethods__["data"] = _fileDuplication.JsonNode_data_set
+    __swig_getmethods__["data"] = _fileDuplication.JsonNode_data_get
+    if _newclass:
+        data = _swig_property(_fileDuplication.JsonNode_data_get, _fileDuplication.JsonNode_data_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_JsonNode()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_JsonNode
+    __del__ = lambda self: None
+JsonNode_swigregister = _fileDuplication.JsonNode_swigregister
+JsonNode_swigregister(JsonNode)
+
+class DuplicationList(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DuplicationList, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DuplicationList, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["numberOfDuplication"] = _fileDuplication.DuplicationList_numberOfDuplication_set
+    __swig_getmethods__["numberOfDuplication"] = _fileDuplication.DuplicationList_numberOfDuplication_get
+    if _newclass:
+        numberOfDuplication = _swig_property(_fileDuplication.DuplicationList_numberOfDuplication_get, _fileDuplication.DuplicationList_numberOfDuplication_set)
+    __swig_setmethods__["list"] = _fileDuplication.DuplicationList_list_set
+    __swig_getmethods__["list"] = _fileDuplication.DuplicationList_list_get
+    if _newclass:
+        list = _swig_property(_fileDuplication.DuplicationList_list_get, _fileDuplication.DuplicationList_list_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_DuplicationList()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_DuplicationList
+    __del__ = lambda self: None
+DuplicationList_swigregister = _fileDuplication.DuplicationList_swigregister
+DuplicationList_swigregister(DuplicationList)
+
+
+def json2Avl(root, path, duplicateL):
+    return _fileDuplication.json2Avl(root, path, duplicateL)
+json2Avl = _fileDuplication.json2Avl
+
+def json2AvlOnFolder(root, path, duplicateL):
+    return _fileDuplication.json2AvlOnFolder(root, path, duplicateL)
+json2AvlOnFolder = _fileDuplication.json2AvlOnFolder
+
+def createNodeWithJson(json, name, path):
+    return _fileDuplication.createNodeWithJson(json, name, path)
+createNodeWithJson = _fileDuplication.createNodeWithJson
+
+def avlCompareFp(data1, data2):
+    return _fileDuplication.avlCompareFp(data1, data2)
+avlCompareFp = _fileDuplication.avlCompareFp
+
+def avlCompareFpWithCrc(data1, data2):
+    return _fileDuplication.avlCompareFpWithCrc(data1, data2)
+avlCompareFpWithCrc = _fileDuplication.avlCompareFpWithCrc
+
+def createItemWithNode(node):
+    return _fileDuplication.createItemWithNode(node)
+createItemWithNode = _fileDuplication.createItemWithNode
+
+def searchCrcOnList(list, numberOfList, crc):
+    return _fileDuplication.searchCrcOnList(list, numberOfList, crc)
+searchCrcOnList = _fileDuplication.searchCrcOnList
+
+def freeJsonNode(jsonRoot):
+    return _fileDuplication.freeJsonNode(jsonRoot)
+freeJsonNode = _fileDuplication.freeJsonNode
+
+def freeDuplicationLinkedList(dupList):
+    return _fileDuplication.freeDuplicationLinkedList(dupList)
+freeDuplicationLinkedList = _fileDuplication.freeDuplicationLinkedList
+
+def freeItem(item):
+    return _fileDuplication.freeItem(item)
+freeItem = _fileDuplication.freeItem
+
+def listAllocMem(duplicateL):
+    return _fileDuplication.listAllocMem(duplicateL)
+listAllocMem = _fileDuplication.listAllocMem
+
+def addDuplicateItemInList(duplicateL, duplicatedItem, nodeSearched):
+    return _fileDuplication.addDuplicateItemInList(duplicateL, duplicatedItem, nodeSearched)
+addDuplicateItemInList = _fileDuplication.addDuplicateItemInList
+
+def _avlAdd(root, nodeToAdd, compare):
+    return _fileDuplication._avlAdd(root, nodeToAdd, compare)
+_avlAdd = _fileDuplication._avlAdd
+
+def avlAdd(root, NodeToAdd, compare):
+    return _fileDuplication.avlAdd(root, NodeToAdd, compare)
+avlAdd = _fileDuplication.avlAdd
+
+def avlBalanceLeftTree(rootPtr):
+    return _fileDuplication.avlBalanceLeftTree(rootPtr)
+avlBalanceLeftTree = _fileDuplication.avlBalanceLeftTree
+
+def avlBalanceRightTree(rootPtr):
+    return _fileDuplication.avlBalanceRightTree(rootPtr)
+avlBalanceRightTree = _fileDuplication.avlBalanceRightTree
+
+def initIntegerNodeData():
+    return _fileDuplication.initIntegerNodeData()
+initIntegerNodeData = _fileDuplication.initIntegerNodeData
+
+def initStringNodeData():
+    return _fileDuplication.initStringNodeData()
+initStringNodeData = _fileDuplication.initStringNodeData
+
+def _initNode(node, left, right, balanceFactor):
+    return _fileDuplication._initNode(node, left, right, balanceFactor)
+_initNode = _fileDuplication._initNode
+
+def rotateLeft(root):
+    return _fileDuplication.rotateLeft(root)
+rotateLeft = _fileDuplication.rotateLeft
+
+def rotateRight(root):
+    return _fileDuplication.rotateRight(root)
+rotateRight = _fileDuplication.rotateRight
+
+def rotateleftRight(node):
+    return _fileDuplication.rotateleftRight(node)
+rotateleftRight = _fileDuplication.rotateleftRight
+
+def rotateRightLeft(node):
+    return _fileDuplication.rotateRightLeft(node)
+rotateRightLeft = _fileDuplication.rotateRightLeft
+
+def calcbalanceFactor(root):
+    return _fileDuplication.calcbalanceFactor(root)
+calcbalanceFactor = _fileDuplication.calcbalanceFactor
+
+def nodeHeight(root):
+    return _fileDuplication.nodeHeight(root)
+nodeHeight = _fileDuplication.nodeHeight
+class Node(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, Node, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, Node, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["left"] = _fileDuplication.Node_left_set
+    __swig_getmethods__["left"] = _fileDuplication.Node_left_get
+    if _newclass:
+        left = _swig_property(_fileDuplication.Node_left_get, _fileDuplication.Node_left_set)
+    __swig_setmethods__["right"] = _fileDuplication.Node_right_set
+    __swig_getmethods__["right"] = _fileDuplication.Node_right_get
+    if _newclass:
+        right = _swig_property(_fileDuplication.Node_right_get, _fileDuplication.Node_right_set)
+    __swig_setmethods__["balanceFactor"] = _fileDuplication.Node_balanceFactor_set
+    __swig_getmethods__["balanceFactor"] = _fileDuplication.Node_balanceFactor_get
+    if _newclass:
+        balanceFactor = _swig_property(_fileDuplication.Node_balanceFactor_get, _fileDuplication.Node_balanceFactor_set)
+    __swig_setmethods__["data"] = _fileDuplication.Node_data_set
+    __swig_getmethods__["data"] = _fileDuplication.Node_data_get
+    if _newclass:
+        data = _swig_property(_fileDuplication.Node_data_get, _fileDuplication.Node_data_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_Node()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_Node
+    __del__ = lambda self: None
+Node_swigregister = _fileDuplication.Node_swigregister
+Node_swigregister(Node)
+cvar = _fileDuplication.cvar
+
+CHANGED = _fileDuplication.CHANGED
+NO_CHANGED = _fileDuplication.NO_CHANGED
+NODE_ADD_EXIST = _fileDuplication.NODE_ADD_EXIST
+ROOT_NULL = _fileDuplication.ROOT_NULL
+class Exception(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, Exception, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, Exception, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["msg"] = _fileDuplication.Exception_msg_set
+    __swig_getmethods__["msg"] = _fileDuplication.Exception_msg_get
+    if _newclass:
+        msg = _swig_property(_fileDuplication.Exception_msg_get, _fileDuplication.Exception_msg_set)
+    __swig_setmethods__["errorCode"] = _fileDuplication.Exception_errorCode_set
+    __swig_getmethods__["errorCode"] = _fileDuplication.Exception_errorCode_get
+    if _newclass:
+        errorCode = _swig_property(_fileDuplication.Exception_errorCode_get, _fileDuplication.Exception_errorCode_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_Exception()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_Exception
+    __del__ = lambda self: None
+Exception_swigregister = _fileDuplication.Exception_swigregister
+Exception_swigregister(Exception)
+
+
+def createException(msg, errorCode):
+    return _fileDuplication.createException(msg, errorCode)
+createException = _fileDuplication.createException
+
+def freeException(e):
+    return _fileDuplication.freeException(e)
+freeException = _fileDuplication.freeException
+
+def dumpException(e):
+    return _fileDuplication.dumpException(e)
+dumpException = _fileDuplication.dumpException
+class IntegerNode(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, IntegerNode, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, IntegerNode, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["left"] = _fileDuplication.IntegerNode_left_set
+    __swig_getmethods__["left"] = _fileDuplication.IntegerNode_left_get
+    if _newclass:
+        left = _swig_property(_fileDuplication.IntegerNode_left_get, _fileDuplication.IntegerNode_left_set)
+    __swig_setmethods__["right"] = _fileDuplication.IntegerNode_right_set
+    __swig_getmethods__["right"] = _fileDuplication.IntegerNode_right_get
+    if _newclass:
+        right = _swig_property(_fileDuplication.IntegerNode_right_get, _fileDuplication.IntegerNode_right_set)
+    __swig_setmethods__["balanceFactor"] = _fileDuplication.IntegerNode_balanceFactor_set
+    __swig_getmethods__["balanceFactor"] = _fileDuplication.IntegerNode_balanceFactor_get
+    if _newclass:
+        balanceFactor = _swig_property(_fileDuplication.IntegerNode_balanceFactor_get, _fileDuplication.IntegerNode_balanceFactor_set)
+    __swig_setmethods__["data"] = _fileDuplication.IntegerNode_data_set
+    __swig_getmethods__["data"] = _fileDuplication.IntegerNode_data_get
+    if _newclass:
+        data = _swig_property(_fileDuplication.IntegerNode_data_get, _fileDuplication.IntegerNode_data_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_IntegerNode()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_IntegerNode
+    __del__ = lambda self: None
+IntegerNode_swigregister = _fileDuplication.IntegerNode_swigregister
+IntegerNode_swigregister(IntegerNode)
+
+
+def avlRemoveIntegerWithValue(root, data):
+    return _fileDuplication.avlRemoveIntegerWithValue(root, data)
+avlRemoveIntegerWithValue = _fileDuplication.avlRemoveIntegerWithValue
+
+def avlAddInteger(root, nodeToAdd):
+    return _fileDuplication.avlAddInteger(root, nodeToAdd)
+avlAddInteger = _fileDuplication.avlAddInteger
+
+def compareInt(node1, node2):
+    return _fileDuplication.compareInt(node1, node2)
+compareInt = _fileDuplication.compareInt
+
+def compareIntwithVoidPtr(data1, data2):
+    return _fileDuplication.compareIntwithVoidPtr(data1, data2)
+compareIntwithVoidPtr = _fileDuplication.compareIntwithVoidPtr
+class StrNode(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, StrNode, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, StrNode, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["left"] = _fileDuplication.StrNode_left_set
+    __swig_getmethods__["left"] = _fileDuplication.StrNode_left_get
+    if _newclass:
+        left = _swig_property(_fileDuplication.StrNode_left_get, _fileDuplication.StrNode_left_set)
+    __swig_setmethods__["right"] = _fileDuplication.StrNode_right_set
+    __swig_getmethods__["right"] = _fileDuplication.StrNode_right_get
+    if _newclass:
+        right = _swig_property(_fileDuplication.StrNode_right_get, _fileDuplication.StrNode_right_set)
+    __swig_setmethods__["balanceFactor"] = _fileDuplication.StrNode_balanceFactor_set
+    __swig_getmethods__["balanceFactor"] = _fileDuplication.StrNode_balanceFactor_get
+    if _newclass:
+        balanceFactor = _swig_property(_fileDuplication.StrNode_balanceFactor_get, _fileDuplication.StrNode_balanceFactor_set)
+    __swig_setmethods__["data"] = _fileDuplication.StrNode_data_set
+    __swig_getmethods__["data"] = _fileDuplication.StrNode_data_get
+    if _newclass:
+        data = _swig_property(_fileDuplication.StrNode_data_get, _fileDuplication.StrNode_data_set)
+
+    def __init__(self):
+        this = _fileDuplication.new_StrNode()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _fileDuplication.delete_StrNode
+    __del__ = lambda self: None
+StrNode_swigregister = _fileDuplication.StrNode_swigregister
+StrNode_swigregister(StrNode)
+
+
+def compareStrVoidPtr(str1, str2):
+    return _fileDuplication.compareStrVoidPtr(str1, str2)
+compareStrVoidPtr = _fileDuplication.compareStrVoidPtr
+
+def avlRemoveNearestLeft(rootPtr, heightChangedStatus):
+    return _fileDuplication.avlRemoveNearestLeft(rootPtr, heightChangedStatus)
+avlRemoveNearestLeft = _fileDuplication.avlRemoveNearestLeft
+
+def avlRemove(rootPtr, data, compare):
+    return _fileDuplication.avlRemove(rootPtr, data, compare)
+avlRemove = _fileDuplication.avlRemove
+
+def _avlRemove(rootPtr, data, heightChangedStatus, compare):
+    return _fileDuplication._avlRemove(rootPtr, data, heightChangedStatus, compare)
+_avlRemove = _fileDuplication._avlRemove
+
+def avlSearch(nodePtr, key, compare):
+    return _fileDuplication.avlSearch(nodePtr, key, compare)
+avlSearch = _fileDuplication.avlSearch
 # This file is compatible with both classic and new-style classes.
 
 

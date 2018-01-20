@@ -7,18 +7,18 @@
  * @param  *path: the path to search
  * @retval a linked list that contains all the duplication 
  */
-DuplicationList findDuplicate(const char *path)
+_DuplicationList * findDuplicate(const char *path)
 {
     //create propertyJson on all the folder
     updateCreateAllJsonOnFolder((char*)path);
     JsonNode *root = NULL;
-    DuplicationList duplicateL;
-	duplicateL.numberOfDuplication = 0;
-    json2Avl(&root, (char*)path, &duplicateL);
+    DuplicationList *dupl = (DuplicationList *)(malloc(sizeof(DuplicationList)));
+    dupl->numberOfDuplication = 0;
+    json2Avl(&root, (char *)path, dupl);
 
     //delete the whole avl tree
     freeJsonNode(root);
-    return duplicateL;
+    return (_DuplicationList*)dupl;
 }
 
 void listAllDuplication(DuplicationList dl){
@@ -40,4 +40,12 @@ void listAllDuplication(DuplicationList dl){
         }
         printf("----------------------------------\n\n");
     }
+}
+
+DuplicationList * testSwig(const char *path)
+{
+    updateCreateAllJsonOnFolder((char *)path);
+    DuplicationList *dupl = (DuplicationList*)(malloc(sizeof(DuplicationList)));
+    dupl->numberOfDuplication = 0;
+    return dupl;
 }

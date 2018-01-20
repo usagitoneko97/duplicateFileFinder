@@ -26,7 +26,7 @@ typedef struct
 typedef struct{
     char *name;
     long long size;
-    uint32_t crc;
+    int crc;
     Date dateModified;
     char *path;
     //..
@@ -43,7 +43,6 @@ int isRegularFile(const char *path);
 FileProperty* getNextFile(FileObj *fileObj);
 FileProperty *getnextFileIgnoreProperty(FileObj *fileObj);
 FolderContent *getNextFolder(FileObj *fileObj);
-void openSrc();
 
 void removeDir(char *path);
 void _removeDir(DIR *dr, char *path);
