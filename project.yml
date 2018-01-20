@@ -14,7 +14,7 @@
   :test_file_prefix: test_
 
 :release_build:
-  :output: fileDuplication.exe
+  :output: _fileDuplication.so
   :use_assembly: FALSE
 
 :environment:
@@ -70,18 +70,24 @@
       - ${1}                          #list of object files to link (Ruby method call param list sub)
       - -lm                           #link with math header
       - -ljansson
-      - -lrhash
+      - -lrhas
       - -o ${2}                       #executable file output (Ruby method call param list sub)
   
   :release_linker:
     :executable: gcc                  #absolute file path
     :name: 'gcc linker'
     :arguments:
+      - -IC:/Users/User_Lenovo/AppData/Local/Programs/Python/Python36-32/include
+      
       - ${1}                          #list of object files to link (Ruby method call param list sub)
+      - build/release/out/c/fileDuplication_wrap.o
       - -lm                           #link with math header
       - -ljansson
       - -lrhash
+      - -D MS_WIN64
+      - -DPy_TRACE_DEFS
       - -o ${2}                       #executable file output (Ruby method call param list sub)
+      
     
 
 # LIBRARIES
