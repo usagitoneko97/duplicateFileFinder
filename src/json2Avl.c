@@ -160,7 +160,8 @@ int searchCrcOnList(LinkedList *list, int numberOfList, int crc){
  */
 Item *createItemWithNode(JsonNode *node){
     Item *item = (Item*)malloc(sizeof(Item));
-    (item->data) = (void*)node->data;
+    item->data = (FileProperty*)malloc(sizeof(FileProperty));
+    memcpy(item->data, (void*)node->data, sizeof(FileProperty));
     item->next = NULL;
     return item;
 }

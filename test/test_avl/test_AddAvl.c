@@ -48,7 +48,6 @@ void testavlAddInteger_given_node1_add_node5(void){
   initNodeInt(&node5, &node5, &node5, 0);
 
   IntegerNode *root = &node1;
-  Node *rootNode = (Node *)root;
   Try{
     avlAddInteger(&root, &node5);
   }Catch(ex){
@@ -321,7 +320,7 @@ void testavlAddInteger_withExistingValue(void){
   IntegerNode *root = &node5;
   Try
   {
-    heightChanged = avlAddInteger(&root, &node10);
+    heightChanged = avlAddInteger(&root, &node10Clone);
     TEST_FAIL_MESSAGE("same value added to avlTree but no exception thrown");
   }
   Catch(ex)

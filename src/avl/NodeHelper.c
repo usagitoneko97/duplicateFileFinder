@@ -1,7 +1,7 @@
 #include "NodeHelper.h"
 
 extern IntegerNode node2, node3, node4;
-extern IntegerNode node1, node5, node10, node15, node20, node25, node30, node35, node40, node23;
+extern IntegerNode node1, node5, node10, node10Clone, node15, node20, node25, node30, node35, node40, node23;
 extern IntegerNode node45, node50, node55;
 
 extern StrNode nodeAli, nodeAbu, nodeBaba, nodeHgx, nodeJason;
@@ -34,6 +34,7 @@ void initIntegerNodeData(void){
   node60.data = 60;
   node70.data = 70;
   node23.data = 23;
+  node10Clone.data = 10;
 }
 
 void _initNode(Node *node, Node *left, Node *right, int balanceFactor)
